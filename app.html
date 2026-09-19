@@ -7,6 +7,12 @@
 <style>
   body { margin:0; overflow:hidden; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#000; }
   #hud { position:absolute; top:20px; left:20px; color:#fff; z-index:100; pointer-events:none; }
+  #br-hud { position:absolute; top:20px; left:50%; transform:translateX(-50%); z-index:155; display:none; color:#fff; background:rgba(15,18,30,0.88); border:2px solid #ff9c5a; border-radius:14px; padding:9px 18px; min-width:280px; text-align:center; box-shadow:0 0 22px rgba(255,130,60,0.3); pointer-events:none; }
+  #br-hud .br-title { color:#ffb16d; font-weight:bold; letter-spacing:3px; font-size:12px; }
+  #br-hud .br-stats { display:flex; justify-content:space-between; gap:20px; margin-top:4px; font-size:12px; color:#ddd; }
+  #br-hud span { color:#fff0a4; font-weight:bold; }
+  #br-zone-bar { height:6px; margin-top:7px; background:rgba(0,0,0,0.65); border-radius:4px; overflow:hidden; }
+  #br-zone-fill { width:100%; height:100%; background:linear-gradient(90deg,#ff725c,#ffcf68); transition:width 0.4s; }
   #hud .stat { background:rgba(0,0,0,0.7); padding:8px 18px; border-radius:30px; margin-bottom:8px; border:1px solid rgba(255,255,255,0.2); backdrop-filter:blur(5px); font-size:16px; display:flex; align-items:center; gap:10px; }
   #hud .stat span { color:#ffcc00; font-weight:bold; text-shadow:0 0 10px #ffcc00; }
   #health-bar { width:200px; height:18px; background:rgba(0,0,0,0.7); border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.3); margin-top:4px; }
@@ -33,6 +39,10 @@
   #dragon-bar .dragon-title { font-size:14px; color:#ff5555; font-weight:bold; letter-spacing:3px; margin-bottom:4px; }
   #dragon-health-bar { width:100%; height:16px; background:rgba(30,0,0,0.9); border-radius:8px; overflow:hidden; border:1px solid rgba(255,100,100,0.4); }
   #dragon-health-fill { height:100%; width:100%; background:linear-gradient(90deg,#ff0000,#ff8800,#ffcc00); transition:width 0.3s; }
+  #titan-bar { position:absolute; top:230px; left:50%; transform:translateX(-50%); color:#fff; background:rgba(12,18,18,0.9); padding:10px 30px; border-radius:25px; z-index:140; border:2px solid #79e4cf; backdrop-filter:blur(5px); display:none; min-width:340px; text-align:center; box-shadow:0 0 24px rgba(70,220,190,0.35); }
+  #titan-bar .titan-title { font-size:14px; color:#9fffee; font-weight:bold; letter-spacing:3px; margin-bottom:4px; text-shadow:0 0 12px #4de0c0; }
+  #titan-health-bar { width:100%; height:16px; background:rgba(0,20,20,0.9); border-radius:8px; overflow:hidden; border:1px solid rgba(120,255,225,0.5); }
+  #titan-health-fill { height:100%; width:100%; background:linear-gradient(90deg,#236e68,#52e0a7,#d7ff8b); transition:width 0.3s; }
   #combo-display { position:absolute; top:35%; right:40px; color:#fff; z-index:130; display:none; text-align:right; pointer-events:none; }
   #combo-display .combo-count { font-size:48px; font-weight:bold; color:#ffcc00; text-shadow:0 0 20px #ff8800,0 0 40px #ff4400; font-family:monospace; line-height:1; }
   #combo-display .combo-label { font-size:12px; color:#ffaa00; letter-spacing:4px; margin-top:4px; }
@@ -131,6 +141,29 @@
   #start-screen .instructions { margin-top:14px; font-size:12px; color:#888; line-height:1.9; text-align:center; max-width:760px; }
   #start-screen .instructions kbd { background:#2a2a4a; padding:2px 7px; border-radius:5px; color:#7eff7e; font-family:monospace; border:1px solid #4a4a6a; }
   #continue-btn { background:linear-gradient(135deg,#4dc9ff,#2a8fbf) !important; margin-right:10px !important; display:none; }
+  #tower-dungeon { position:absolute; inset:0; z-index:280; display:none; align-items:center; justify-content:center; background:radial-gradient(circle at 50% 20%,rgba(37,76,102,0.96),rgba(5,8,18,0.98) 70%); color:#fff; overflow-y:auto; }
+  #tower-dungeon-content { width:min(900px, calc(100% - 36px)); padding:34px 0; text-align:center; }
+  #tower-dungeon .tower-kicker { color:#77e4d0; letter-spacing:5px; font-size:12px; }
+  #tower-dungeon h1 { margin:8px 0 4px; font-size:42px; color:#d8fff5; text-shadow:0 0 24px #46d6c1; letter-spacing:4px; }
+  #tower-dungeon .tower-subtitle { color:#9bb9c7; font-size:14px; margin-bottom:20px; }
+  #tower-floor-card { border:2px solid #4fd6c0; background:rgba(12,28,38,0.82); border-radius:16px; padding:22px; box-shadow:0 0 40px rgba(52,214,190,0.16); }
+  #tower-floor-number { font-size:76px; line-height:0.9; font-weight:bold; color:#fff; text-shadow:0 0 25px #4fd6c0; }
+  #tower-theme { margin-top:8px; font-size:20px; color:#ffd56a; letter-spacing:3px; }
+  #tower-boss { min-height:22px; margin-top:8px; color:#ff8e7a; font-weight:bold; letter-spacing:2px; }
+  #tower-floor-details { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:20px 0; }
+  .tower-detail { background:rgba(255,255,255,0.06); border:1px solid rgba(160,220,220,0.22); border-radius:10px; padding:11px 7px; }
+  .tower-detail strong { display:block; color:#7eead6; font-size:11px; letter-spacing:1px; margin-bottom:4px; }
+  .tower-detail span { color:#eee; font-size:13px; }
+  #tower-floor-log { min-height:44px; color:#b8cbd0; font-size:13px; line-height:1.5; }
+  #tower-progress { height:10px; background:rgba(0,0,0,0.55); border-radius:8px; overflow:hidden; margin:18px 0 8px; }
+  #tower-progress-fill { height:100%; width:1%; background:linear-gradient(90deg,#3dbaa9,#ffe082); transition:width 0.3s; }
+  #tower-checkpoint { color:#7eff7e; font-size:12px; }
+  #tower-actions { display:flex; justify-content:center; gap:10px; margin-top:22px; flex-wrap:wrap; }
+  #tower-actions button { padding:12px 24px; border:0; border-radius:9px; font-weight:bold; cursor:pointer; font-size:14px; }
+  #tower-fight-btn { background:linear-gradient(135deg,#ffd66b,#e38b35); color:#1e1820; }
+  #tower-rest-btn { background:linear-gradient(135deg,#7effc6,#31a99a); color:#092329; }
+  #tower-leave-btn { background:#283a48; color:#d5e6eb; border:1px solid #54707d !important; }
+  @media (max-width:700px) { #tower-dungeon h1 { font-size:30px; } #tower-floor-number { font-size:56px; } #tower-floor-details { grid-template-columns:repeat(2,1fr); } }
 </style>
 </head>
 <body>
@@ -149,6 +182,8 @@
     <div class="feat">🪄 Spells</div>
     <div class="feat">⚓ Grapple</div>
     <div class="feat">🐉 Dragon</div>
+    <div class="feat new">🗿 Titan Colossus</div>
+    <div class="feat new">🏰 100-Floor Tower</div>
   </div>
   <div id="mode-selector">
     <div class="mode-card selected" data-mode="adventure">
@@ -183,6 +218,12 @@
   <div id="xp-text">0 / 100 XP</div>
 </div>
 
+<div id="br-hud">
+  <div class="br-title">⚔️ BATTLE ROYALE</div>
+  <div class="br-stats"><span>ALIVE <span id="br-alive-value">21</span></span><span>KILLS <span id="br-kills-value">0</span></span><span>ZONE <span id="br-zone-value">100%</span></span></div>
+  <div id="br-zone-bar"><div id="br-zone-fill"></div></div>
+</div>
+
 <div id="level-display">
   <span class="lv">LV <span id="level-value">1</span></span>
   <span class="sp" id="skill-points-display">🎯 0 Skill Points (T)</span>
@@ -202,6 +243,11 @@
 <div id="dragon-bar">
   <div class="dragon-title">🐉 ANCIENT DRAGON 🐉</div>
   <div id="dragon-health-bar"><div id="dragon-health-fill"></div></div>
+</div>
+
+<div id="titan-bar">
+  <div class="titan-title">🗿 TITAN COLOSSUS 🗿</div>
+  <div id="titan-health-bar"><div id="titan-health-fill"></div></div>
 </div>
 
 <div id="weather-banner"></div>
@@ -261,6 +307,33 @@
     <div class="hint">Click a highlighted skill to spend 1 point</div>
   </div>
   <div id="skill-branches"></div>
+</div>
+
+<div id="tower-dungeon">
+  <div id="tower-dungeon-content">
+    <div class="tower-kicker">ENDGAME ASCENSION</div>
+    <h1>🏰 THE SKYFALL TOWER</h1>
+    <div class="tower-subtitle">100 floors above the world · checkpoint every 10 floors</div>
+    <div id="tower-floor-card">
+      <div id="tower-floor-number">FLOOR 1</div>
+      <div id="tower-theme">ANCIENT RUINS</div>
+      <div id="tower-boss"></div>
+      <div id="tower-floor-details">
+        <div class="tower-detail"><strong>THREAT</strong><span id="tower-threat">1 / 10</span></div>
+        <div class="tower-detail"><strong>ENEMIES</strong><span id="tower-enemies">Skeleton Warriors</span></div>
+        <div class="tower-detail"><strong>REWARD</strong><span id="tower-reward">Rare cache</span></div>
+        <div class="tower-detail"><strong>ZONE</strong><span id="tower-zone">Combat floor</span></div>
+      </div>
+      <div id="tower-floor-log">The gate opens onto an endless ascent.</div>
+      <div id="tower-progress"><div id="tower-progress-fill"></div></div>
+      <div id="tower-checkpoint">Checkpoint: Floor 1</div>
+      <div id="tower-actions">
+        <button id="tower-fight-btn">⚔️ ENTER FLOOR</button>
+        <button id="tower-rest-btn" style="display:none;">✦ REST AT CHECKPOINT</button>
+        <button id="tower-leave-btn">↩ LEAVE TOWER</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div id="crosshair"></div>
@@ -325,6 +398,9 @@ const SFX = {
   chestOpen: () => { playTone(440, 0.1, 'sine', 0.3); setTimeout(()=>playTone(660,0.1,'sine',0.3), 100); setTimeout(()=>playTone(880,0.2,'sine',0.3), 200); },
   damage: () => { playTone(120, 0.2, 'sawtooth', 0.3); playNoise(0.15, 800, 0.2); },
   dragonRoar: () => { playTone(80, 1.2, 'sawtooth', 0.5, -20); playTone(120, 1.0, 'square', 0.3, -10); playNoise(0.8, 400, 0.3); },
+  titanRoar: () => { playTone(42, 2.4, 'sawtooth', 0.65, -30); playTone(68, 2.0, 'square', 0.45, -12); playNoise(1.8, 180, 0.5); },
+  titanRumble: () => { playTone(30, 1.6, 'sine', 0.24, -24); playNoise(1.2, 110, 0.18); },
+  titanStep: () => { playTone(38, 0.45, 'sine', 0.55, -18); playNoise(0.35, 120, 0.5); },
   thunder: () => { playNoise(1.5, 200, 0.5); playTone(60, 1.5, 'sine', 0.4, -30); },
   ambientBird: () => { playTone(1400 + Math.random()*400, 0.1, 'sine', 0.15); setTimeout(()=>playTone(1600 + Math.random()*400, 0.08, 'sine', 0.12), 120); },
   ambientCricket: () => { for(let i=0;i<3;i++) setTimeout(()=>playTone(3000 + Math.random()*500, 0.04, 'square', 0.08), i*60); },
@@ -356,6 +432,19 @@ const game = {
   level: 1, xp: 0, xpNext: 100, skillPoints: 0,
   timeScale: 1, timeSlowTimer: 0
 };
+const towerDungeon = {
+  active: false, floor: 1, checkpoint: 1, cleared: 0, secretFound: false,
+  saveKey: 'skyfall_tower_checkpoint_v1'
+};
+const brPlayers = [];
+const brState = {
+  zoneCenter: new THREE.Vector3(0, 0, 0), zoneRadius: 280, startRadius: 280,
+  targetRadius: 280, shrinkTimer: 28, matchTime: 0, npcTimer: 2.5,
+  zoneMesh: null
+};
+const companionState = { type: null, mesh: null, attackTimer: 0, types: ['Wolf', 'Dragon Hatchling', 'Golem', 'Fairy'] };
+const arenaState = { active: false, round: 0, maxRound: 10, enemies: [], nextRoundTimer: 0 };
+const mountState = { active: false, type: null, mesh: null, types: ['Horse', 'Wolf', 'Giant Bird', 'Dragon'] };
 const MOVE_EPSILON = 0.001;
 
 // ============================================================
@@ -590,7 +679,11 @@ function toggleSkillTree() {
 const WEAPON_TYPES = {
   sword: { name:'⚔️ Sword', desc:'Melee slash', damage:15, range:3.5, cooldown:0.5, type:'melee', swingStyle:'slash' },
   bow: { name:'🏹 Bow', desc:'Ranged arrow', damage:25, range:25.0, cooldown:1.2, type:'ranged', swingStyle:'draw' },
-  wand: { name:'🪄 Magic Wand', desc:'Magic bolt', damage:40, range:20.0, cooldown:1.5, type:'magic', swingStyle:'cast', spellColor: 0x9b59b6, spellGlow: 0xd888ff }
+  wand: { name:'🪄 Magic Wand', desc:'Magic bolt', damage:40, range:20.0, cooldown:1.5, type:'magic', swingStyle:'cast', spellColor: 0x9b59b6, spellGlow: 0xd888ff },
+  thunderHammer: { name:'⚡ Thunder Hammer', desc:'Shockwave slam', damage:34, range:4.5, cooldown:1.0, type:'melee', swingStyle:'slash', ability:'shockwave' },
+  dragonSlayer: { name:'🐉 Dragon Slayer Sword', desc:'Double damage to dragons', damage:42, range:4.5, cooldown:0.7, type:'melee', swingStyle:'slash', ability:'dragonSlayer' },
+  voidBow: { name:'🌌 Void Bow', desc:'Piercing void shot', damage:38, range:32.0, cooldown:1.0, type:'ranged', swingStyle:'draw', ability:'voidShot' },
+  frostAxe: { name:'❄️ Frost Axe', desc:'Freezes enemies', damage:30, range:4.2, cooldown:0.9, type:'melee', swingStyle:'slash', ability:'freeze' }
 };
 const currentWeapon = { type: null, lastAttackTime: 0, swinging: 0 };
 
@@ -969,6 +1062,26 @@ function updateSpellEffects(dt) {
         break;
       }
     }
+    if (!exploded && game.mode === 'battleroyale') {
+      for (let j = brPlayers.length - 1; j >= 0; j--) {
+        const rival = brPlayers[j];
+        if (s.mesh.position.distanceTo(rival.position) < 2.2) {
+          applyDamageToBRPlayer(rival, s.damage, true);
+          spawnHitParticles(s.mesh.position.clone(), s.color, 20);
+          addShake(0.5);
+          exploded = true;
+          break;
+        }
+      }
+    }
+    if (!exploded && titanColossus && titanColossus.userData.hp > 0) {
+      if (s.mesh.position.distanceTo(titanColossus.position) < 9) {
+        applyDamageToTitan(s.damage);
+        spawnHitParticles(s.mesh.position.clone(), s.color, 25);
+        addShake(0.7);
+        exploded = true;
+      }
+    }
     if (!exploded && dragon) {
       if (s.mesh.position.distanceTo(dragon.position) < 4) {
         applyDamageToDragon(s.damage);
@@ -1068,6 +1181,7 @@ function updateAnchor(dt, now) {
       }
     }
     if (!hit && dragon && anchor.anchorPoint.distanceTo(dragon.position) < 4) hit = true;
+    if (!hit && titanColossus && anchor.anchorPoint.distanceTo(titanColossus.position) < 10) hit = true;
     if (anchor.anchorPoint.distanceTo(player.position) > anchor.maxRange) hit = true;
     if (hit) {
       anchor.anchored = true;
@@ -1190,14 +1304,15 @@ function getHeight(x, z) {
   }
   return h;
 }
+const START_POSITION = { x: 20, z: 130 };
 
 // ============================================================
 //  SCENE
 // ============================================================
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x87CEEB);
-scene.fog = new THREE.Fog(0x87CEEB, 80, 260);
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 800);
+scene.fog = new THREE.Fog(0x87CEEB, 120, 700);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1200);
 scene.add(camera);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -1407,6 +1522,86 @@ function createFloatingIsland(x, z) {
   return g;
 }
 
+const towerSteps = [];
+function createSkyfallTower(x, z) {
+  const g = new THREE.Group();
+  const basalt = new THREE.MeshStandardMaterial({ color: 0x283746, roughness: 0.92, metalness: 0.15 });
+  const stone = new THREE.MeshStandardMaterial({ color: 0x52616b, roughness: 0.88 });
+  const rune = new THREE.MeshStandardMaterial({ color: 0x86fff0, emissive: 0x27d8c2, emissiveIntensity: 2.4, roughness: 0.25 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xd7a84b, emissive: 0x684316, emissiveIntensity: 0.45, roughness: 0.4, metalness: 0.6 });
+  const add = (mesh, px, py, pz, material) => {
+    mesh.material = material || mesh.material;
+    mesh.position.set(px, py, pz);
+    mesh.castShadow = true; mesh.receiveShadow = true;
+    g.add(mesh);
+    return mesh;
+  };
+  add(new THREE.Mesh(new THREE.BoxGeometry(48, 5, 48), basalt), 0, 2.5, 0);
+  add(new THREE.Mesh(new THREE.BoxGeometry(36, 184, 36), stone), 0, 94, 0);
+  add(new THREE.Mesh(new THREE.BoxGeometry(42, 8, 42), basalt), 0, 12, 0);
+  for (let floor = 0; floor < 10; floor++) {
+    const y = 20 + floor * 18;
+    add(new THREE.Mesh(new THREE.BoxGeometry(29, 1.2, 29), basalt), 0, y, 0);
+    for (const side of [-1, 1]) {
+      add(new THREE.Mesh(new THREE.BoxGeometry(1.2, 5.5, 7), rune), side * 18.3, y + 4, 0, rune);
+      add(new THREE.Mesh(new THREE.BoxGeometry(7, 5.5, 1.2), rune), 0, y + 4, side * 18.3, rune);
+    }
+  }
+  for (const side of [-1, 1]) {
+    add(new THREE.Mesh(new THREE.BoxGeometry(5, 30, 5), basalt), side * 23, 18, side * 23);
+    add(new THREE.Mesh(new THREE.BoxGeometry(5, 30, 5), basalt), side * 23, 18, -side * 23);
+  }
+  add(new THREE.Mesh(new THREE.BoxGeometry(10, 12, 1.2), gold), 0, 8, 18.1, gold);
+  add(new THREE.Mesh(new THREE.BoxGeometry(6, 7, 1.4), rune), 0, 8, 18.8, rune);
+  for (let floor = 0; floor < 100; floor++) {
+    const angle = Math.PI / 2 + floor * 0.24;
+    const radius = 26;
+    const px = Math.cos(angle) * radius;
+    const pz = Math.sin(angle) * radius;
+    const py = 1 + floor * 1.8;
+    const step = add(new THREE.Mesh(new THREE.BoxGeometry(8, 1.2, 5), basalt), px, py, pz, basalt);
+    step.rotation.y = -angle;
+    towerSteps.push({ x: x + px, z: z + pz, topY: getHeight(x, z) + py + 0.6 });
+  }
+  for (const side of [-1, 1]) {
+    add(new THREE.Mesh(new THREE.ConeGeometry(4.5, 14, 4), basalt), side * 16, 195, 0);
+    add(new THREE.Mesh(new THREE.ConeGeometry(4.5, 14, 4), basalt), 0, 195, side * 16);
+  }
+  const crown = add(new THREE.Mesh(new THREE.OctahedronGeometry(6), rune), 0, 209, 0, rune);
+  crown.rotation.z = Math.PI / 4;
+  const crownLight = new THREE.PointLight(0x48f3dc, 5, 120);
+  crownLight.position.set(0, 204, 0); g.add(crownLight);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(22, 0.45, 8, 48), new THREE.MeshBasicMaterial({ color: 0x62f6df, transparent: true, opacity: 0.55 }));
+  ring.rotation.x = Math.PI / 2; ring.position.y = 175; g.add(ring);
+  g.userData.tower = true;
+  return g;
+}
+
+function getTowerStairGround(x, z) {
+  let highest = null;
+  for (const step of towerSteps) {
+    const dx = x - step.x, dz = z - step.z;
+    if (dx * dx + dz * dz < 4.5 * 4.5 && (highest === null || step.topY > highest)) highest = step.topY;
+  }
+  return highest;
+}
+
+function createArenaLandmark(x, z) {
+  const arena = new THREE.Group();
+  const stone = new THREE.MeshStandardMaterial({ color: 0x4d5660, roughness: 0.9 });
+  const glow = new THREE.MeshStandardMaterial({ color: 0xffb347, emissive: 0xff6a1a, emissiveIntensity: 1.8 });
+  const floor = new THREE.Mesh(new THREE.CylinderGeometry(18, 20, 1.2, 16), stone); floor.position.y = 0.6; arena.add(floor);
+  for (let i = 0; i < 8; i++) {
+    const angle = i / 8 * Math.PI * 2;
+    const pillar = new THREE.Mesh(new THREE.BoxGeometry(1.8, 7, 1.8), stone);
+    pillar.position.set(Math.cos(angle) * 16, 3.5, Math.sin(angle) * 16); pillar.castShadow = true; arena.add(pillar);
+    const rune = new THREE.Mesh(new THREE.BoxGeometry(0.35, 3, 0.2), glow);
+    rune.position.set(Math.cos(angle) * 15, 4, Math.sin(angle) * 15); arena.add(rune);
+  }
+  arena.userData.arena = true;
+  return arena;
+}
+
 function createForestCluster(x, z) {
   const g = new THREE.Group();
   for (let i = 0; i < 10; i++) {
@@ -1434,7 +1629,9 @@ function createWorldLandmarks() {
     { type: 'battlefield', x: 0, z: 180, name: 'Forgotten Battlefield', func: createBattlefield },
     { type: 'dungeon', x: -120, z: 190, name: 'Underground Dungeon', func: createDungeon },
     { type: 'forest', x: 150, z: 170, name: 'Sacred Forest', func: createSacredForest },
-    { type: 'floating', x: -200, z: -60, name: 'Floating Island', func: createFloatingIsland }
+    { type: 'floating', x: -200, z: -60, name: 'Floating Island', func: createFloatingIsland },
+    { type: 'tower', x: 0, z: -285, name: 'Skyfall Tower', func: createSkyfallTower },
+    { type: 'arena', x: 220, z: -80, name: 'Champion Arena', func: createArenaLandmark }
   ];
 
   const extraPoiDefs = [
@@ -1696,7 +1893,7 @@ const worldEventState = {
   raidCooldown: 0,
   meteorCooldown: 0,
   dragonFlyoverCooldown: 0,
-  activeEvents: []
+  activeEvents: [], bloodMoonTimer: 0
 };
 
 const MONSTER_TYPES = {
@@ -1707,7 +1904,17 @@ const MONSTER_TYPES = {
   iceGiant: { name: 'Ice Giant', color: 0xb7e8ff, emissive: 0x4f9dff, hp: 520, speed: 1.4, damage: 35, scale: 3.0, xp: 160 },
   fireDrake: { name: 'Fire Drake', color: 0xd84b21, emissive: 0xff6b16, hp: 280, speed: 4.0, damage: 28, scale: 1.7, xp: 100 },
   seaSerpent: { name: 'Sea Serpent', color: 0x277f8b, emissive: 0x25e0cf, hp: 380, speed: 2.8, damage: 30, scale: 2.2, xp: 130 },
-  voidDragon: { name: 'Void Dragon', color: 0x271743, emissive: 0x9b35ff, hp: 900, speed: 3.0, damage: 42, scale: 3.3, xp: 300 }
+  voidDragon: { name: 'Void Dragon', color: 0x271743, emissive: 0x9b35ff, hp: 900, speed: 3.0, damage: 42, scale: 3.3, xp: 300 },
+  goldenSkeleton: { name: 'Golden Skeleton', color: 0xffd34e, emissive: 0xff9f1c, hp: 180, speed: 3.2, damage: 28, scale: 1.2, xp: 120 },
+  ancientKnight: { name: 'Ancient Knight', color: 0x596875, emissive: 0x9fd5ff, hp: 420, speed: 3.6, damage: 38, scale: 1.55, xp: 180 },
+  shadowAssassin: { name: 'Shadow Assassin', color: 0x171329, emissive: 0x9e4dff, hp: 200, speed: 7.5, damage: 34, scale: 1.15, xp: 150 },
+  crystalBeast: { name: 'Crystal Beast', color: 0x48e4e8, emissive: 0x2bffff, hp: 360, speed: 2.8, damage: 32, scale: 1.65, xp: 170 },
+  treant: { name: 'Treant', color: 0x5d3e25, emissive: 0x57c85c, hp: 460, speed: 1.3, damage: 40, scale: 2.0, xp: 190 },
+  sandWorm: { name: 'Sand Worm', color: 0xb88945, emissive: 0xffc05c, hp: 520, speed: 2.1, damage: 45, scale: 2.2, xp: 220 },
+  scorpionKing: { name: 'Scorpion King', color: 0x6f2f19, emissive: 0xff5b25, hp: 580, speed: 3.4, damage: 48, scale: 1.8, xp: 240 },
+  frostDragon: { name: 'Frost Dragon', color: 0x8edcff, emissive: 0x5ac8ff, hp: 700, speed: 3.4, damage: 50, scale: 2.8, xp: 280 },
+  lavaTitan: { name: 'Lava Titan', color: 0x6b2620, emissive: 0xff3d18, hp: 900, speed: 1.5, damage: 60, scale: 2.7, xp: 340 },
+  fallenAngel: { name: 'Fallen Angel', color: 0x46365f, emissive: 0xe07bff, hp: 1100, speed: 4.5, damage: 58, scale: 2.2, xp: 450 }
 };
 
 function createMonsterMesh(typeKey, hard = false) {
@@ -1720,7 +1927,17 @@ function createMonsterMesh(typeKey, hard = false) {
   else if (typeKey === 'demonKnight') geometry = new THREE.BoxGeometry(1.4, 2.4, 1.1);
   else if (typeKey === 'iceGiant') geometry = new THREE.DodecahedronGeometry(1.5, 1);
   else if (typeKey === 'fireDrake') geometry = new THREE.ConeGeometry(1.2, 2.8, 8);
-  else if (typeKey === 'seaSerpent') geometry = new THREE.CapsuleGeometry(0.8, 2.8, 4, 8);
+  else if (typeKey === 'seaSerpent') geometry = new THREE.CylinderGeometry(0.8, 1.1, 4.4, 10);
+  else if (typeKey === 'goldenSkeleton') geometry = new THREE.ConeGeometry(0.95, 2.8, 8);
+  else if (typeKey === 'ancientKnight') geometry = new THREE.BoxGeometry(1.8, 2.8, 1.4);
+  else if (typeKey === 'shadowAssassin') geometry = new THREE.ConeGeometry(0.9, 2.6, 5);
+  else if (typeKey === 'crystalBeast') geometry = new THREE.IcosahedronGeometry(1.45, 1);
+  else if (typeKey === 'treant') geometry = new THREE.CylinderGeometry(1.0, 1.5, 3.8, 8);
+  else if (typeKey === 'sandWorm') geometry = new THREE.CylinderGeometry(0.9, 1.2, 4.0, 10);
+  else if (typeKey === 'scorpionKing') geometry = new THREE.DodecahedronGeometry(1.5, 1);
+  else if (typeKey === 'frostDragon') geometry = new THREE.ConeGeometry(1.4, 3.4, 8);
+  else if (typeKey === 'lavaTitan') geometry = new THREE.DodecahedronGeometry(1.7, 1);
+  else if (typeKey === 'fallenAngel') geometry = new THREE.OctahedronGeometry(1.7, 1);
   else geometry = new THREE.IcosahedronGeometry(1.6, 1);
   const mesh = new THREE.Mesh(geometry, material);
   mesh.scale.setScalar(type.scale * (hard ? 1.15 : 1));
@@ -1738,7 +1955,8 @@ function spawnEnemyAt(x, z, hard = false, typeKey = null) {
       emissiveIntensity: hard ? 0.8 : 0.6,
       roughness: 0.4
     }));
-  enemy.position.set(x, getHeight(x, z) + (hard ? 0.9 : 0.6), z);
+  const groundOffset = hard ? 0.9 : 0.6;
+  enemy.position.set(x, getHeight(x, z) + groundOffset, z);
   if (!type) enemy.scale.setScalar(hard ? 1.15 + Math.random() * 0.35 : 0.8 + Math.random() * 0.45);
   enemy.castShadow = true; enemy.receiveShadow = true;
   enemy.userData = {
@@ -1751,6 +1969,7 @@ function spawnEnemyAt(x, z, hard = false, typeKey = null) {
     monsterType: typeKey,
     speed: type ? type.speed : 2.5,
     attackDamage: type ? type.damage : 15,
+    groundOffset,
     specialTimer: 3 + Math.random() * 4,
     reflectedHit: false
   };
@@ -1776,6 +1995,9 @@ function spawnPriorityMonsters() {
     ['iceGiant', -70, 260],
     ['fireDrake', 260, -30],
     ['seaSerpent', 90, 220],
+    ['treant', 150, 170], ['sandWorm', 270, 120],
+    ['scorpionKing', -250, -80], ['frostDragon', -70, 260],
+    ['lavaTitan', 260, -30], ['fallenAngel', -260, 210],
     ['voidDragon', -200, -60]
   ];
   for (const [typeKey, x, z] of spawns) spawnEnemyAt(x, z, true, typeKey);
@@ -1822,8 +2044,36 @@ function triggerRaidEvent() {
 function triggerRareMonsterEvent() {
   const x = (Math.random() - 0.5) * 500;
   const z = (Math.random() - 0.5) * 500;
-  spawnEnemyAt(x, z, true);
-  showLootNotification('legendary', 'Rare monster sighted');
+  const rareTypes = ['goldenSkeleton', 'ancientKnight', 'shadowAssassin', 'crystalBeast'];
+  const typeKey = rareTypes[Math.floor(Math.random() * rareTypes.length)];
+  spawnEnemyAt(x, z, true, typeKey);
+  showLootNotification('legendary', `${MONSTER_TYPES[typeKey].name} sighted`);
+}
+
+function triggerGoblinInvasion() {
+  const centerX = (Math.random() - 0.5) * 420;
+  const centerZ = (Math.random() - 0.5) * 420;
+  for (let i = 0; i < 8; i++) spawnEnemyAt(centerX + (Math.random() - 0.5) * 18, centerZ + (Math.random() - 0.5) * 18, i === 7, 'shadowWolf');
+  showLootNotification('legendary', 'Goblin invasion! Defend the frontier');
+}
+
+function triggerBloodMoonEvent() {
+  worldEventState.bloodMoonTimer = 55;
+  sky.timeOfDay = 0.88;
+  showLootNotification('legendary', 'Blood Moon rising · monsters grow stronger');
+  worldEventState.activeEvents.push({ type: 'bloodMoon', life: 55 });
+}
+
+function triggerTitanDragonEvent() {
+  if (!titanColossus || !dragon) return;
+  const x = (Math.random() - 0.5) * 280;
+  const z = (Math.random() - 0.5) * 280;
+  titanColossus.position.set(x, getHeight(x, z), z);
+  dragon.position.set(x + 18, getHeight(x + 18, z + 18) + 3, z + 18);
+  dragonState.mode = 'ground'; dragonState.modeTimer = 0; dragonState.groundTimer = 18;
+  worldEventState.activeEvents.push({ type: 'titanDragon', life: 35, timer: 0 });
+  showLootNotification('legendary', 'Titan Colossus vs Ancient Dragon · Join the world battle');
+  SFX.titanRoar();
 }
 
 function triggerMeteorEvent() {
@@ -1854,11 +2104,14 @@ function updateWorldEvents(dt) {
     worldEventState.nextEvent = 20 + Math.random() * 12;
 
     const roll = Math.random();
-    if (roll < 0.18) triggerMeteorEvent();
-    else if (roll < 0.34) triggerTreasureEvent();
-    else if (roll < 0.50) triggerMerchantEvent();
+    if (roll < 0.14) triggerTitanDragonEvent();
+    else if (roll < 0.27) triggerMeteorEvent();
+    else if (roll < 0.40) triggerTreasureEvent();
+    else if (roll < 0.52) triggerMerchantEvent();
     else if (roll < 0.66) triggerRaidEvent();
-    else if (roll < 0.79) triggerRareMonsterEvent();
+    else if (roll < 0.77) triggerRareMonsterEvent();
+    else if (roll < 0.87) triggerGoblinInvasion();
+    else if (roll < 0.94) triggerBloodMoonEvent();
     else if (dragon) triggerDragonFlyoverEvent();
   }
 
@@ -1878,6 +2131,29 @@ function updateWorldEvents(dt) {
       if (evt.life <= 0) {
         scene.remove(evt.mesh);
         worldEventState.activeEvents.splice(i, 1);
+      }
+    } else if (evt.type === 'titanDragon') {
+      evt.timer += dt;
+      if (evt.timer > 2 && titanColossus && dragon) {
+        evt.timer = 0;
+        applyDamageToDragon(35);
+        if (titanColossus) applyDamageToTitan(30);
+        createTitanShockwave(titanColossus ? titanColossus.position.clone() : new THREE.Vector3(), 20, 18);
+      }
+      if (evt.life <= 0 || (!titanColossus && !dragon)) {
+        const x = titanColossus ? titanColossus.position.x : player.position.x;
+        const z = titanColossus ? titanColossus.position.z : player.position.z;
+        const chest = createChest(x + 3, z + 3);
+        chest.userData.eventChest = true; chest.userData.glowSprite.visible = true;
+        showLootNotification('legendary', 'Titan-Dragon battle treasure discovered');
+        worldEventState.activeEvents.splice(i, 1);
+      }
+    } else if (evt.type === 'bloodMoon') {
+      if (evt.life <= 0) {
+        worldEventState.bloodMoonTimer = 0;
+        sky.currentWeather = 'clear';
+        worldEventState.activeEvents.splice(i, 1);
+        showLootNotification('rare', 'The Blood Moon fades');
       }
     } else if (evt.type === 'treasure' || evt.type === 'meteorLoot') {
       if (evt.life <= 0) {
@@ -1932,6 +2208,7 @@ for (let i = 0; i <= 6; i++) {
 }
 scene.add(bridge);
 const bridgeBounds = { minX:-1.8, maxX:1.8, minZ:bridgeCenterZ-bridgeLength/2, maxZ:bridgeCenterZ+bridgeLength/2, y:bridgeY+0.2 };
+bridge.userData = { damage: 0 };
 
 // Trees
 const trees = [];
@@ -1974,6 +2251,7 @@ for (let i = 0; i < MAP.treeCount; i++) {
     createTree(x, z, getHeight(x, z), scale);
   }
 }
+const worldRocks = [];
 for (let i = 0; i < MAP.rockCount; i++) {
   const size = 0.4 + Math.random()*0.8;
   const rock = new THREE.Mesh(new THREE.BoxGeometry(size, size*0.7, size), new THREE.MeshStandardMaterial({ color: 0x7f8c8d, roughness: 0.95 }));
@@ -1982,8 +2260,9 @@ for (let i = 0; i < MAP.rockCount; i++) {
     a++;
     x = (Math.random()-0.5) * (MAP.groundSize-30);
     z = (Math.random()-0.5) * (MAP.groundSize-30);
-    valid = Math.sqrt(x*x+z*z) > 15;
+    valid = Math.sqrt(x*x+z*z) > 35;
     if (valid && riverDistance(x, z) < MAP.riverWidth+2) valid = false;
+    if (valid && Math.abs(x) < 10 && Math.abs(z - bridgeCenterZ) < bridgeLength / 2 + 8) valid = false;
     if (a > 200) break;
   } while (!valid);
   if (!valid) continue;
@@ -1992,6 +2271,7 @@ for (let i = 0; i < MAP.rockCount; i++) {
   rock.rotation.y = Math.random()*Math.PI;
   rock.castShadow = true; rock.receiveShadow = true;
   scene.add(rock);
+  worldRocks.push(rock);
 }
 
 // Cubes
@@ -2097,7 +2377,7 @@ function createWeaponPickup(typeKey, x, z, rarity) {
   scene.add(g);
   weaponPickups.push(g);
 }
-const weaponTypes = ['sword','bow','wand'];
+const weaponTypes = ['sword','bow','wand','thunderHammer','dragonSlayer','voidBow','frostAxe'];
 for (let i = 0; i < MAP.weaponCount; i++) {
   let x, z, valid, a = 0;
   do {
@@ -2195,6 +2475,330 @@ function createDragon() {
   dg.scale.set(1.2, 1.2, 1.2);
   scene.add(dg);
   return dg;
+}
+
+// ============================================================
+//  TITAN COLOSSUS WORLD BOSS
+// ============================================================
+let titanColossus = null;
+const titanEffects = [];
+const titanState = {
+  mode: 'patrol', regionIndex: 0, target: new THREE.Vector3(),
+  stepTimer: 0, attackTimer: 5, roarTimer: 12, rumbleTimer: 8, eventTimer: 30,
+  walkPhase: 0, footprintTimer: 0, lastDamageTime: 0, chargeTimer: 0
+};
+const titanRegions = [
+  [-235, -220], [-40, -245], [210, -190], [245, 35],
+  [175, 225], [-40, 235], [-230, 180], [-250, 15]
+];
+
+function createTitanColossus() {
+  const titan = new THREE.Group();
+  const skin = new THREE.MeshStandardMaterial({ color: 0x8b6a56, roughness: 0.92, metalness: 0.05 });
+  const skinDark = new THREE.MeshStandardMaterial({ color: 0x533e36, roughness: 0.98 });
+  const armor = new THREE.MeshStandardMaterial({ color: 0x4a5560, roughness: 0.78, metalness: 0.5 });
+  const cloth = new THREE.MeshStandardMaterial({ color: 0x2c2430, roughness: 0.96, side: THREE.DoubleSide });
+  const crystal = new THREE.MeshStandardMaterial({ color: 0x76f2dc, emissive: 0x1abda8, emissiveIntensity: 2.2, roughness: 0.2, metalness: 0.45 });
+  const energy = new THREE.MeshStandardMaterial({ color: 0xbafff2, emissive: 0x39e8cf, emissiveIntensity: 3 });
+  const scar = new THREE.MeshStandardMaterial({ color: 0x361b1b, emissive: 0x5f2020, emissiveIntensity: 0.25, roughness: 1 });
+  const parts = [skin, skinDark, armor, cloth, crystal, energy, scar];
+  const crystals = [], cracks = [];
+  const add = (mesh, x, y, z, material) => {
+    mesh.material = material;
+    mesh.position.set(x, y, z);
+    mesh.castShadow = true; mesh.receiveShadow = true;
+    titan.add(mesh);
+    return mesh;
+  };
+  add(new THREE.Mesh(new THREE.BoxGeometry(10, 15, 6), skin), 0, 22, 0, skin);
+  add(new THREE.Mesh(new THREE.BoxGeometry(7.5, 8, 6.4), armor), 0, 25, 0.4, armor);
+  add(new THREE.Mesh(new THREE.BoxGeometry(8.5, 2.2, 6.8), armor), 0, 31, 0.2, armor);
+  add(new THREE.Mesh(new THREE.BoxGeometry(5.8, 6.2, 5.8), skin), 0, 37, 0.1, skin);
+  add(new THREE.Mesh(new THREE.BoxGeometry(6.5, 2.8, 6.2), skinDark), 0, 41.2, -0.1, skinDark);
+  add(new THREE.Mesh(new THREE.BoxGeometry(6.8, 1.8, 6.4), cloth), 0, 44, -0.2, cloth);
+  add(new THREE.Mesh(new THREE.BoxGeometry(7.4, 2, 1.4), skinDark), 0, 40.2, 3.0, skinDark);
+  add(new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.75, 0.25), energy), -1.6, 38.2, 3.02, energy);
+  add(new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.75, 0.25), energy), 1.6, 38.2, 3.02, energy);
+  for (const [x, y, angle] of [[-1.3, 36.2, -0.3], [0.3, 34.2, 0.2], [1.5, 36.5, 0.35], [-0.6, 28.3, -0.2]]) {
+    const mark = add(new THREE.Mesh(new THREE.BoxGeometry(0.24, 3.8, 0.18), scar), x, y, 3.16, scar);
+    mark.rotation.z = angle;
+  }
+  for (const [x, y, scale] of [[-2.2, 29, 1.2], [2.2, 29, 1.2], [-1.7, 41.2, 0.8], [1.7, 41.2, 0.8]]) {
+    const c = add(new THREE.Mesh(new THREE.OctahedronGeometry(scale), crystal), x, y, 3.1, crystal);
+    c.rotation.set(Math.random(), Math.random(), Math.random());
+    crystals.push(c);
+  }
+  const leftArm = new THREE.Group(); leftArm.position.set(-7, 29, 0); titan.add(leftArm);
+  const rightArm = new THREE.Group(); rightArm.position.set(7, 29, 0); titan.add(rightArm);
+  const addLimb = (group, x, y, z, sx, sy, sz, material) => {
+    const limb = new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), material);
+    limb.position.set(x, y, z); limb.castShadow = true; limb.receiveShadow = true; group.add(limb); return limb;
+  };
+  addLimb(leftArm, 0, -5, 0, 4.2, 10, 4.2, skin);
+  addLimb(leftArm, 0, -12, 0.2, 3.7, 6, 3.8, skinDark);
+  addLimb(rightArm, 0, -5, 0, 4.2, 10, 4.2, skin);
+  addLimb(rightArm, 0, -12, 0.2, 3.7, 6, 3.8, skinDark);
+  const leftFist = addLimb(leftArm, 0, -17, 0.5, 5.2, 5.2, 5.2, armor);
+  const rightFist = addLimb(rightArm, 0, -17, 0.5, 5.2, 5.2, 5.2, armor);
+  add(new THREE.Mesh(new THREE.BoxGeometry(5, 7, 5), skin), -3.4, 8, 0, skin);
+  add(new THREE.Mesh(new THREE.BoxGeometry(5, 7, 5), skin), 3.4, 8, 0, skin);
+  const leftLeg = new THREE.Group(); leftLeg.position.set(-3.4, 14, 0); titan.add(leftLeg);
+  const rightLeg = new THREE.Group(); rightLeg.position.set(3.4, 14, 0); titan.add(rightLeg);
+  addLimb(leftLeg, 0, -5, 0, 5, 10, 5, skinDark);
+  addLimb(leftLeg, 0, -11, 0.4, 4.7, 5, 5.2, armor);
+  addLimb(rightLeg, 0, -5, 0, 5, 10, 5, skinDark);
+  addLimb(rightLeg, 0, -11, 0.4, 4.7, 5, 5.2, armor);
+  add(new THREE.Mesh(new THREE.BoxGeometry(6.2, 2.2, 7.5), armor), -3.4, 1.1, 1.1, armor);
+  add(new THREE.Mesh(new THREE.BoxGeometry(6.2, 2.2, 7.5), armor), 3.4, 1.1, 1.1, armor);
+  const cape = add(new THREE.Mesh(new THREE.BoxGeometry(12, 22, 0.35), cloth), 0, 22, -3.5, cloth);
+  cape.rotation.z = 0.04;
+  for (const [x, y, sx, sy, angle] of [[-2.2, 24, 0.22, 7, -0.3], [0, 20, 0.18, 8, 0.15], [2.1, 27, 0.2, 6, 0.3]]) {
+    const crack = add(new THREE.Mesh(new THREE.BoxGeometry(sx, sy, 0.12), energy), x, y, 3.28, energy);
+    crack.rotation.z = angle; cracks.push(crack);
+  }
+  const beacon = new THREE.PointLight(0x49e7ca, 5, 150);
+  beacon.position.set(0, 39, 3); titan.add(beacon);
+
+  titan.userData = { materials: parts, crystals, cracks, leftArm, rightArm, leftFist, rightFist, leftLeg, rightLeg, beacon, hp: 12000, maxHp: 12000, hitFlash: 0, displayName: 'Titan Colossus' };
+  titan.position.set(-235, getHeight(-235, -220), -220);
+  scene.add(titan);
+  return titan;
+}
+
+function createTitanDust(position, count = 18) {
+  spawnHitParticles(position, 0x9b8b72, count);
+  for (const p of hitParticles.slice(-count)) {
+    p.mesh.material.color.setHex(0x9b8b72);
+    p.mesh.scale.setScalar(1.8);
+    p.vel.y += 1.5;
+  }
+}
+
+function createTitanFootprint(x, z) {
+  const mark = new THREE.Mesh(new THREE.CylinderGeometry(4.5, 5.5, 0.08, 10), new THREE.MeshStandardMaterial({ color: 0x3e3933, roughness: 1, transparent: true, opacity: 0.8 }));
+  mark.position.set(x, getHeight(x, z) + 0.04, z);
+  mark.rotation.y = titanColossus.rotation.y;
+  scene.add(mark);
+  titanEffects.push({ type: 'footprint', mesh: mark, life: 90 });
+  if (Math.random() < 0.12) {
+    const chest = createChest(x + 2, z - 1);
+    chest.userData.eventChest = true;
+    chest.userData.glowSprite.visible = true;
+    showLootNotification('legendary', 'Rare treasure near a Titan footprint');
+  }
+}
+
+function createTitanShockwave(position, radius = 20, damage = 28) {
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(2, 0.35, 8, 32), new THREE.MeshBasicMaterial({ color: 0x9fffee, transparent: true, opacity: 0.9 }));
+  ring.rotation.x = Math.PI / 2;
+  ring.position.copy(position); ring.position.y = getHeight(position.x, position.z) + 0.25;
+  scene.add(ring);
+  titanEffects.push({ type: 'shockwave', mesh: ring, life: 1.2, maxLife: 1.2, radius, damage, hit: false });
+}
+
+function throwTitanBoulder(target) {
+  const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(1.5, 1), new THREE.MeshStandardMaterial({ color: 0x595752, roughness: 1 }));
+  const start = titanColossus.position.clone().add(new THREE.Vector3(0, 36, 3));
+  rock.position.copy(start);
+  const destination = target.clone(); destination.y = getHeight(target.x, target.z) + 1;
+  const velocity = destination.sub(start).normalize().multiplyScalar(26);
+  scene.add(rock);
+  titanEffects.push({ type: 'boulder', mesh: rock, velocity, life: 3.5, target: target.clone() });
+}
+
+function damageTitanWorld() {
+  const tx = titanColossus.position.x, tz = titanColossus.position.z;
+  for (const tree of trees) {
+    if (tree.group.visible && Math.hypot(tree.x - tx, tree.z - tz) < 24) {
+      tree.group.visible = false;
+      tree.destroyedByTitan = true;
+      createTitanDust(new THREE.Vector3(tree.x, tree.y + 2, tree.z), 5);
+    }
+  }
+  for (const landmark of worldLandmarks) {
+    const distance = Math.hypot(landmark.position.x - tx, landmark.position.z - tz);
+    if (landmark.userData.poiType === 'village' && distance < 35 && !landmark.userData.titanWarning) {
+      landmark.userData.titanWarning = true;
+      showLootNotification('rare', 'Villagers request help: the Titan is approaching!');
+    }
+    if (!landmark.userData.titanDamaged && distance < 10 && landmark.userData.poiType !== 'floating') {
+      landmark.userData.titanDamaged = true;
+      landmark.scale.multiplyScalar(0.35);
+      showLootNotification('rare', `${landmark.userData.name || 'Village'} damaged by the Titan`);
+    }
+  }
+  if (tx > bridgeBounds.minX - 12 && tx < bridgeBounds.maxX + 12 && tz > bridgeBounds.minZ - 12 && tz < bridgeBounds.maxZ + 12) {
+    bridge.userData.damage = (bridge.userData.damage || 0) + 1;
+    bridge.scale.y = Math.max(0.25, 1 - bridge.userData.damage * 0.12);
+    if (bridge.userData.damage > 5) bridge.visible = false;
+  }
+}
+
+function titanRoarAttack() {
+  const distance = player.position.distanceTo(titanColossus.position);
+  SFX.titanRoar();
+  if (distance < 110) {
+    addShake(0.9);
+    const away = player.position.clone().sub(titanColossus.position).setY(0).normalize();
+    player.velocity.x += away.x * 12; player.velocity.z += away.z * 12; player.velocity.y = 5;
+    showDamageVignette();
+  }
+  for (const enemy of enemies) {
+    if (enemy.position.distanceTo(titanColossus.position) < 85) {
+      enemy.userData.knockbackVel.x += (enemy.position.x - titanColossus.position.x) * 0.25;
+      enemy.userData.knockbackVel.z += (enemy.position.z - titanColossus.position.z) * 0.25;
+    }
+  }
+}
+
+function updateTitanEffects(dt) {
+  for (let i = titanEffects.length - 1; i >= 0; i--) {
+    const effect = titanEffects[i];
+    effect.life -= dt;
+    if (effect.type === 'shockwave') {
+      const progress = 1 - effect.life / effect.maxLife;
+      effect.mesh.scale.setScalar(1 + progress * effect.radius / 2);
+      effect.mesh.material.opacity = effect.life / effect.maxLife;
+      const d = player.position.distanceTo(effect.mesh.position);
+      if (!effect.hit && d < effect.radius * progress && d > 2) {
+        effect.hit = true; game.health = Math.max(0, game.health - effect.damage); showDamageVignette(); addShake(0.8);
+        document.getElementById('health-fill').style.width = Math.max(0, game.health / game.maxHealth * 100) + '%';
+        if (game.health <= 0) endGame(false);
+      }
+      for (const enemy of enemies) {
+        if (!enemy.userData.titanShockwaveHit && enemy.position.distanceTo(effect.mesh.position) < effect.radius * progress) {
+          enemy.userData.titanShockwaveHit = true;
+          applyDamageToEnemy(enemy, effect.damage);
+        }
+      }
+      if (dragon && !effect.dragonHit && dragon.position.distanceTo(effect.mesh.position) < effect.radius * progress) {
+        effect.dragonHit = true;
+        applyDamageToDragon(effect.damage);
+      }
+    } else if (effect.type === 'boulder') {
+      effect.velocity.y -= 18 * dt;
+      effect.mesh.position.addScaledVector(effect.velocity, dt);
+      effect.mesh.rotation.x += dt * 5; effect.mesh.rotation.z += dt * 4;
+      if (effect.mesh.position.y <= getHeight(effect.mesh.position.x, effect.mesh.position.z) + 1 || effect.life <= 0) {
+        createTitanShockwave(effect.mesh.position, 12, 20);
+        createTitanDust(effect.mesh.position, 12);
+        scene.remove(effect.mesh); titanEffects.splice(i, 1); continue;
+      }
+    }
+    if (effect.life <= 0) {
+      scene.remove(effect.mesh);
+      if (effect.mesh.material) effect.mesh.material.dispose();
+      titanEffects.splice(i, 1);
+    }
+  }
+}
+
+function updateTitan(dt, now) {
+  if (!titanColossus || game.mode !== 'adventure') return;
+  const ud = titanColossus.userData;
+  if (ud.hitFlash > 0) {
+    ud.hitFlash -= dt;
+    if (ud.hitFlash <= 0) ud.materials.forEach(m => { m.emissive.setHex(m === ud.materials[4] ? 0x1abda8 : m === ud.materials[5] ? 0x39e8cf : 0x000000); });
+  }
+  const region = titanRegions[titanState.regionIndex];
+  titanState.target.set(region[0], 0, region[1]);
+  const dx = titanState.target.x - titanColossus.position.x;
+  const dz = titanState.target.z - titanColossus.position.z;
+  const dist = Math.hypot(dx, dz);
+  if (dist < 12) {
+    titanState.regionIndex = (titanState.regionIndex + 1) % titanRegions.length;
+    showLootNotification('rare', 'The Titan Colossus changes regions');
+  }
+  const speed = 3.2;
+  if (dist > 1) {
+    const nx = dx / dist, nz = dz / dist;
+    const moveSpeed = titanState.chargeTimer > 0 ? 12 : speed;
+    titanColossus.position.x += nx * moveSpeed * dt;
+    titanColossus.position.z += nz * moveSpeed * dt;
+    const yaw = Math.atan2(nx, nz);
+    titanColossus.rotation.y += Math.atan2(Math.sin(yaw - titanColossus.rotation.y), Math.cos(yaw - titanColossus.rotation.y)) * Math.min(dt * 3, 1);
+    titanState.walkPhase += dt * 3.2;
+    ud.leftLeg.rotation.x = Math.sin(titanState.walkPhase) * 0.28;
+    ud.rightLeg.rotation.x = Math.sin(titanState.walkPhase + Math.PI) * 0.28;
+    ud.leftArm.rotation.x = Math.sin(titanState.walkPhase + Math.PI) * 0.18;
+    ud.rightArm.rotation.x = Math.sin(titanState.walkPhase) * 0.18;
+    titanState.stepTimer -= dt;
+    if (titanState.stepTimer <= 0) {
+      titanState.stepTimer = titanState.chargeTimer > 0 ? 0.45 : 1.15;
+      const foot = titanColossus.position.clone(); foot.y = getHeight(foot.x, foot.z);
+      createTitanDust(foot, 22); createTitanFootprint(foot.x, foot.z); damageTitanWorld();
+      addShake(titanColossus.position.distanceTo(player.position) < 75 ? 0.35 : 0.08);
+      SFX.titanStep();
+    }
+  }
+  titanState.roarTimer -= dt;
+  if (titanState.roarTimer <= 0) { titanState.roarTimer = 24 + Math.random() * 20; titanRoarAttack(); }
+  titanState.rumbleTimer -= dt;
+  if (titanState.rumbleTimer <= 0) { titanState.rumbleTimer = 9 + Math.random() * 8; SFX.titanRumble(); }
+  titanState.attackTimer -= dt;
+  if (titanState.chargeTimer > 0) {
+    titanState.chargeTimer -= dt;
+    if (titanState.chargeTimer <= 0) createTitanShockwave(titanColossus.position.clone(), 22, 30);
+  }
+  const playerDist = titanColossus.position.distanceTo(player.position);
+  const dragonDist = dragon ? titanColossus.position.distanceTo(dragon.position) : Infinity;
+  if (titanState.attackTimer <= 0) {
+    titanState.attackTimer = 7 + Math.random() * 5;
+    if (dragon && dragonDist < 120 && Math.random() < 0.45) {
+      createTitanShockwave(dragon.position.clone(), 24, 30);
+      applyDamageToDragon(45);
+      showLootNotification('legendary', 'Titan Colossus clashes with the Ancient Dragon');
+    } else if (playerDist < 55) {
+      if (Math.random() < 0.5) {
+        titanColossus.userData.leftFist.rotation.x = -0.8;
+        titanColossus.userData.rightFist.rotation.x = -0.8;
+        createTitanShockwave(titanColossus.position.clone(), 28, 36);
+      } else {
+        throwTitanBoulder(player.position);
+      }
+    } else if (playerDist < 120) {
+      titanState.chargeTimer = 3.2;
+      showLootNotification('legendary', 'Titan Colossus charge attack!');
+    }
+  }
+  titanState.eventTimer -= dt;
+  if (titanState.eventTimer <= 0 && Math.random() < 0.25) {
+    titanState.eventTimer = 35;
+    const target = player.position.clone().add(new THREE.Vector3((Math.random() - 0.5) * 80, 0, (Math.random() - 0.5) * 80));
+    titanColossus.position.set(target.x, getHeight(target.x, target.z), target.z);
+    showLootNotification('legendary', 'The Titan Colossus has appeared nearby!');
+    titanRoarAttack();
+  }
+  const nearby = playerDist < 130;
+  const bar = document.getElementById('titan-bar');
+  bar.style.display = nearby ? 'block' : 'none';
+  if (nearby) document.getElementById('titan-health-fill').style.width = Math.max(0, ud.hp / ud.maxHp * 100) + '%';
+  ud.beacon.intensity = 2.5 + Math.sin(now * 2) * 0.7;
+  ud.crystals.forEach((crystal, i) => { crystal.material.emissiveIntensity = 1.8 + Math.sin(now * 2.4 + i) * 0.7; });
+  ud.cracks.forEach((crack, i) => { crack.material.emissiveIntensity = 2.2 + Math.sin(now * 3.1 + i * 0.8) * 1.1; });
+}
+
+function applyDamageToTitan(baseDamage) {
+  if (!titanColossus || titanColossus.userData.hp <= 0) return;
+  const isCrit = Math.random() < getCritChance();
+  const finalDamage = Math.max(1, Math.floor(baseDamage * getComboMultiplier() * (isCrit ? getCritMultiplier() : 1) * 0.55));
+  titanColossus.userData.hp -= finalDamage;
+  titanColossus.userData.hitFlash = 0.16;
+  titanColossus.userData.materials.forEach(m => { m.emissive.setHex(0xffffff); m.emissiveIntensity = 1.2; });
+  spawnDamageNumber(titanColossus.position.clone().add(new THREE.Vector3(0, 28, 3)), finalDamage, isCrit, '#9fffee');
+  spawnHitParticles(titanColossus.position.clone().add(new THREE.Vector3(0, 24, 0)), 0x7af79a, 24);
+  addShake(isCrit ? 0.8 : 0.35); addCombo();
+  if (titanColossus.userData.hp <= 0) killTitanColossus();
+}
+
+function killTitanColossus() {
+  const pos = titanColossus.position.clone();
+  for (let i = 0; i < 7; i++) createTitanDust(pos.clone().add(new THREE.Vector3((Math.random() - 0.5) * 15, 3, (Math.random() - 0.5) * 15)), 14);
+  createTitanShockwave(pos, 36, 50);
+  scene.remove(titanColossus); titanColossus = null;
+  game.kills += 25; document.getElementById('kill-count').textContent = game.kills;
+  addXP(2500); showLootNotification('legendary', 'Titan Colossus defeated! Ancient Relics acquired');
+  document.getElementById('titan-bar').style.display = 'none';
 }
 
 // ============================================================
@@ -2354,6 +2958,90 @@ scene.add(shieldMesh);
 // ============================================================
 //  PLAYER STATE
 // ============================================================
+function createCompanionMesh(type) {
+  const companion = new THREE.Group();
+  const bodyMat = new THREE.MeshStandardMaterial({ color: type === 'Golem' ? 0x71808b : type === 'Dragon Hatchling' ? 0xb53b46 : type === 'Wolf' ? 0x4a4a58 : 0xf2c6ff, emissive: type === 'Fairy' ? 0x9b59b6 : 0x000000, emissiveIntensity: type === 'Fairy' ? 1.5 : 0, roughness: 0.7 });
+  const body = new THREE.Mesh(type === 'Golem' ? new THREE.DodecahedronGeometry(0.75, 1) : new THREE.BoxGeometry(0.9, 0.8, 1.3), bodyMat);
+  body.position.y = 0.8; body.castShadow = true; companion.add(body);
+  const head = new THREE.Mesh(type === 'Fairy' ? new THREE.SphereGeometry(0.38, 10, 10) : new THREE.BoxGeometry(0.7, 0.7, 0.7), bodyMat);
+  head.position.y = 1.5; head.castShadow = true; companion.add(head);
+  if (type === 'Dragon Hatchling') {
+    const wingMat = new THREE.MeshStandardMaterial({ color: 0x6b1e2c, side: THREE.DoubleSide });
+    for (const side of [-1, 1]) {
+      const wing = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.12, 0.7), wingMat);
+      wing.position.set(side * 0.65, 1.1, -0.1); wing.rotation.z = side * 0.35; companion.add(wing);
+    }
+  } else if (type === 'Fairy') {
+    const wingMat = new THREE.SpriteMaterial({ color: 0x9fffee, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
+    for (const side of [-1, 1]) { const wing = new THREE.Sprite(wingMat); wing.scale.set(0.8, 1.1, 1); wing.position.set(side * 0.45, 1.2, 0); companion.add(wing); }
+  }
+  companion.userData.type = type;
+  companion.position.copy(player.position).add(new THREE.Vector3(2, -player.height + 0.2, 2));
+  scene.add(companion);
+  return companion;
+}
+function recruitNextCompanion() {
+  if (!game.active || game.mode !== 'adventure') return;
+  if (companionState.mesh) scene.remove(companionState.mesh);
+  const index = companionState.type ? (companionState.types.indexOf(companionState.type) + 1) % companionState.types.length : 0;
+  companionState.type = companionState.types[index];
+  companionState.mesh = createCompanionMesh(companionState.type);
+  companionState.attackTimer = 0;
+  showPickupToast(`${companionState.type} recruited · Press P to change`);
+}
+function updateCompanion(dt, now) {
+  if (!companionState.mesh || game.mode !== 'adventure') return;
+  const companion = companionState.mesh;
+  const behind = new THREE.Vector3(-Math.sin(player.yaw) * 2.5, -player.height + 0.2, -Math.cos(player.yaw) * 2.5);
+  const side = new THREE.Vector3(Math.cos(player.yaw) * 1.4, 0, -Math.sin(player.yaw) * 1.4);
+  const target = player.position.clone().add(behind).add(side);
+  if (companion.position.distanceTo(player.position) > 18) companion.position.copy(target);
+  else companion.position.lerp(target, Math.min(dt * 4, 1));
+  companion.position.y = getHeight(companion.position.x, companion.position.z) + Math.sin(now * 4) * 0.08;
+  companion.rotation.y = Math.atan2(player.position.x - companion.position.x, player.position.z - companion.position.z);
+  companionState.attackTimer -= dt;
+  if (companionState.attackTimer <= 0) {
+    companionState.attackTimer = 1.8;
+    let nearest = null, nearestDistance = 18;
+    for (const enemy of enemies) {
+      const distance = companion.position.distanceTo(enemy.position);
+      if (distance < nearestDistance) { nearest = enemy; nearestDistance = distance; }
+    }
+    if (nearest) applyDamageToEnemy(nearest, 12);
+    else if (titanColossus && companion.position.distanceTo(titanColossus.position) < 28) applyDamageToTitan(10);
+  }
+}
+function toggleMount() {
+  if (!game.active || game.mode !== 'adventure') return;
+  if (mountState.active) {
+    mountState.active = false;
+    if (mountState.mesh) mountState.mesh.visible = false;
+    showPickupToast('Dismounted');
+    return;
+  }
+  const index = mountState.type ? (mountState.types.indexOf(mountState.type) + 1) % mountState.types.length : 0;
+  mountState.type = mountState.types[index];
+  const color = mountState.type === 'Dragon' ? 0xb53b46 : mountState.type === 'Giant Bird' ? 0xd7a84b : mountState.type === 'Wolf' ? 0x4a4a58 : 0x8b5a2b;
+  const mount = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.1, 2.2), new THREE.MeshStandardMaterial({ color, roughness: 0.8 }));
+  body.position.y = 0.9; body.castShadow = true; mount.add(body);
+  const head = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.9), new THREE.MeshStandardMaterial({ color, roughness: 0.8 }));
+  head.position.set(0, 1.5, 1.0); head.castShadow = true; mount.add(head);
+  if (mountState.type === 'Dragon' || mountState.type === 'Giant Bird') {
+    for (const side of [-1, 1]) { const wing = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.15, 1.2), new THREE.MeshStandardMaterial({ color: 0x6b1e2c, side: THREE.DoubleSide })); wing.position.set(side * 1.1, 1.3, 0); wing.rotation.z = side * 0.2; mount.add(wing); }
+  }
+  mountState.mesh = mount;
+  mountState.active = true;
+  scene.add(mount);
+  showPickupToast(`${mountState.type} mount equipped · Press M to dismount`);
+}
+function updateMount() {
+  if (!mountState.mesh || !mountState.active) return;
+  mountState.mesh.visible = true;
+  mountState.mesh.position.set(player.position.x, player.groundY, player.position.z);
+  mountState.mesh.rotation.y = player.yaw;
+}
+
 const player = {
   position: new THREE.Vector3(0, 1.6, 0),
   velocity: new THREE.Vector3(0, 0, 0),
@@ -2380,8 +3068,8 @@ const cameraController = {
   desiredPos: new THREE.Vector3(),
   currentPos: new THREE.Vector3()
 };
-player.groundY = getHeight(0, 0);
-player.position.y = player.groundY + player.height;
+player.groundY = getHeight(START_POSITION.x, START_POSITION.z);
+player.position.set(START_POSITION.x, player.groundY + player.height, START_POSITION.z);
 cameraController.yaw = 0;
 cameraController.pitch = -0.7;
 cameraController.currentPos.copy(player.position);
@@ -2468,6 +3156,8 @@ document.addEventListener('keydown', (e) => {
     case 'KeyR': fireFireball(); break;
     case 'KeyF': activateShield(); break;
     case 'KeyV': activateTimeSlow(); break;
+    case 'KeyP': recruitNextCompanion(); break;
+    case 'KeyM': toggleMount(); break;
     case 'KeyT': toggleSkillTree(); e.preventDefault(); break;
   }
 });
@@ -2523,9 +3213,23 @@ function checkTreeCollision(newX, newZ) {
     const ct = treeGrid.get(`${cx+dx},${cz+dz}`);
     if (!ct) continue;
     for (let t of ct) {
+      if (!t.group.visible) continue;
       const ddx = newX-t.x, ddz = newZ-t.z;
       if (ddx*ddx + ddz*ddz < (t.radius+player.radius)**2) return true;
     }
+  }
+  return false;
+}
+function checkWorldCollision(newX, newZ) {
+  if (checkTreeCollision(newX, newZ)) return true;
+  const playerBottom = player.position.y - player.height;
+  const playerTop = player.position.y + 0.15;
+  for (const landmark of worldLandmarks) {
+    if (!landmark.visible || landmark.userData.titanDamaged || landmark.userData.poiType === 'tower') continue;
+    const bounds = new THREE.Box3().setFromObject(landmark);
+    if (bounds.max.y < playerBottom || bounds.min.y > playerTop) continue;
+    if (newX > bounds.min.x - player.radius && newX < bounds.max.x + player.radius &&
+        newZ > bounds.min.z - player.radius && newZ < bounds.max.z + player.radius) return true;
   }
   return false;
 }
@@ -2648,10 +3352,138 @@ function showLootNotification(rarity, itemName) {
 }
 
 // ============================================================
+//  SKYFALL TOWER DUNGEON
+// ============================================================
+const towerThemes = [
+  { min: 1, max: 20, name: 'ANCIENT RUINS', enemies: ['Skeleton Warriors', 'Shadow Assassins'], color: '#c7a879' },
+  { min: 21, max: 40, name: 'CRYSTAL CAVERNS', enemies: ['Crystal Golems', 'Void Creatures'], color: '#7fe7ff' },
+  { min: 41, max: 60, name: 'FROZEN CITADEL', enemies: ['Frost Giants', 'Skeleton Warriors'], color: '#b7e8ff' },
+  { min: 61, max: 80, name: 'INFERNAL FORTRESS', enemies: ['Demon Knights', 'Fire Drakes'], color: '#ff7650' },
+  { min: 81, max: 99, name: 'VOID REALM', enemies: ['Void Creatures', 'Shadow Assassins'], color: '#c98cff' },
+  { min: 100, max: 100, name: "TITAN KING'S THRONE", enemies: ['Titan King', 'Void Creatures'], color: '#ffe08a' }
+];
+const towerBosses = { 20: 'SKELETON KING', 40: 'CRYSTAL TITAN', 60: 'ICE COLOSSUS', 80: 'INFERNAL DRAGON', 100: 'TITAN KING' };
+function getTowerFloorData(floor) {
+  const theme = towerThemes.find(t => floor >= t.min && floor <= t.max) || towerThemes[0];
+  const isBoss = !!towerBosses[floor];
+  const isSafe = floor % 10 === 0;
+  const enemyCount = isBoss ? 1 + Math.floor(floor / 25) : 2 + Math.floor(floor / 12) + Math.floor(Math.random() * 3);
+  const enemyNames = isBoss ? [towerBosses[floor]] : [...theme.enemies].sort(() => Math.random() - 0.5);
+  const secret = floor > 5 && (floor % 7 === 0 || Math.random() < 0.08);
+  return {
+    theme, isBoss, isSafe, secret, enemyCount,
+    enemyNames, threat: Math.min(10, Math.ceil(floor / 10)),
+    reward: floor === 100 ? 'Titan King Relic + exclusive title' : floor % 10 === 0 ? 'Legendary equipment cache' : floor > 80 ? 'Ancient artifact' : floor > 50 ? 'Epic weapon' : 'Rare cache'
+  };
+}
+function saveTowerCheckpoint() {
+  localStorage.setItem(towerDungeon.saveKey, JSON.stringify({ checkpoint: towerDungeon.checkpoint, cleared: towerDungeon.cleared }));
+}
+function loadTowerCheckpoint() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(towerDungeon.saveKey) || 'null');
+    if (saved) {
+      towerDungeon.checkpoint = Math.max(1, Math.min(100, saved.checkpoint || 1));
+      towerDungeon.cleared = Math.max(0, Math.min(100, saved.cleared || 0));
+    }
+  } catch (e) { towerDungeon.checkpoint = 1; towerDungeon.cleared = 0; }
+}
+function renderTowerDungeon(message) {
+  const floor = towerDungeon.floor;
+  const data = getTowerFloorData(floor);
+  document.getElementById('tower-floor-number').textContent = `FLOOR ${floor}`;
+  document.getElementById('tower-theme').textContent = data.theme.name;
+  document.getElementById('tower-theme').style.color = data.theme.color;
+  document.getElementById('tower-boss').textContent = data.isBoss ? `⚔️ BOSS FLOOR: ${towerBosses[floor]} ⚔️` : '';
+  document.getElementById('tower-threat').textContent = `${data.threat} / 10`;
+  document.getElementById('tower-enemies').textContent = `${data.enemyCount}× ${data.enemyNames.join(' · ')}`;
+  document.getElementById('tower-reward').textContent = data.reward;
+  document.getElementById('tower-zone').textContent = data.isSafe ? 'Safe zone + checkpoint' : data.secret ? 'Secret passage detected' : 'Combat floor';
+  document.getElementById('tower-floor-log').textContent = message || (data.isBoss ? 'The guardian waits beyond the sealed gate.' : data.secret ? 'A hidden passage flickers behind the masonry.' : 'The tower groans as new enemies gather above.');
+  document.getElementById('tower-progress-fill').style.width = `${floor}%`;
+  document.getElementById('tower-checkpoint').textContent = `Checkpoint: Floor ${towerDungeon.checkpoint} · Cleared: ${towerDungeon.cleared} / 100`;
+  document.getElementById('tower-rest-btn').style.display = data.isSafe || towerDungeon.checkpoint === floor - 1 ? 'inline-block' : 'none';
+  document.getElementById('tower-fight-btn').textContent = floor === 100 ? '⚔️ CHALLENGE TITAN KING' : data.isSafe ? '⚔️ CLEAR CHECKPOINT FLOOR' : '⚔️ ENTER FLOOR';
+}
+function enterTowerDungeon() {
+  if (!game.active || towerDungeon.active) return;
+  loadTowerCheckpoint();
+  towerDungeon.active = true;
+  towerDungeon.floor = towerDungeon.checkpoint;
+  game.active = false;
+  if (document.pointerLockElement === canvas) document.exitPointerLock();
+  document.getElementById('tower-dungeon').style.display = 'flex';
+  document.getElementById('interact-prompt').style.display = 'none';
+  addWorldAchievement('Skyfall Tower Entrance');
+  renderTowerDungeon();
+}
+function leaveTowerDungeon() {
+  towerDungeon.active = false;
+  saveTowerCheckpoint();
+  document.getElementById('tower-dungeon').style.display = 'none';
+  game.active = true;
+  setTimeout(() => { if (game.active && document.pointerLockElement !== canvas) canvas.requestPointerLock(); }, 100);
+}
+function fightTowerFloor() {
+  if (!towerDungeon.active) return;
+  const floor = towerDungeon.floor;
+  const data = getTowerFloorData(floor);
+  const rewardXP = 35 + floor * 12 + (data.isBoss ? floor * 20 : 0);
+  addXP(rewardXP);
+  if (floor % 10 === 0) {
+    towerDungeon.checkpoint = floor;
+    towerDungeon.cleared = Math.max(towerDungeon.cleared, floor);
+    saveTowerCheckpoint();
+  } else {
+    towerDungeon.cleared = Math.max(towerDungeon.cleared, floor);
+  }
+  if (data.secret) {
+    towerDungeon.secretFound = true;
+    showLootNotification('epic', `Secret floor discovered on ${floor}`);
+  }
+  if (data.isBoss) {
+    const rarity = floor >= 80 ? 'legendary' : 'epic';
+    createWeaponPickup(['thunderHammer', 'dragonSlayer', 'voidBow', 'frostAxe'][floor % 4], player.position.x + 2, player.position.z + 2, rarity);
+    showLootNotification('legendary', `${towerBosses[floor]} defeated · ${rarity} equipment dropped`);
+  }
+  if (floor === 100) {
+    towerDungeon.cleared = 100;
+    towerDungeon.checkpoint = 100;
+    saveTowerCheckpoint();
+    addWorldAchievement('World Ascender');
+    document.getElementById('tower-floor-log').textContent = 'The Titan King falls. You claim the Skyfall Crown and the title WORLD ASCENDER.';
+    document.getElementById('tower-fight-btn').textContent = '🏆 TOWER CONQUERED';
+    document.getElementById('tower-fight-btn').disabled = true;
+    showLootNotification('legendary', 'World Ascender title + Titan King Relic');
+    return;
+  }
+  towerDungeon.floor = floor + 1;
+  renderTowerDungeon(`${data.isBoss ? towerBosses[floor] : 'Floor cleared'} · +${rewardXP} XP · The ascent continues.`);
+}
+function restAtTowerCheckpoint() {
+  game.health = game.maxHealth;
+  document.getElementById('health-fill').style.width = '100%';
+  renderTowerDungeon(`You rest at checkpoint ${towerDungeon.checkpoint}. Health and resolve restored.`);
+}
+document.getElementById('tower-fight-btn').addEventListener('click', fightTowerFloor);
+document.getElementById('tower-rest-btn').addEventListener('click', restAtTowerCheckpoint);
+document.getElementById('tower-leave-btn').addEventListener('click', leaveTowerDungeon);
+
+// ============================================================
 //  CHEST INTERACTION
 // ============================================================
 function tryInteractChest() {
   if (!game.active) return;
+  const arena = worldLandmarks.find(landmark => landmark.userData && landmark.userData.poiType === 'arena');
+  if (arena && Math.hypot(player.position.x - arena.position.x, player.position.z - arena.position.z) < 26) {
+    enterArena();
+    return;
+  }
+  const tower = worldLandmarks.find(landmark => landmark.userData && landmark.userData.poiType === 'tower');
+  if (tower && Math.hypot(player.position.x - tower.position.x, player.position.z - tower.position.z) < 28) {
+    enterTowerDungeon();
+    return;
+  }
   for (let i = chests.length - 1; i >= 0; i--) {
     const c = chests[i];
     const dx = player.position.x - c.position.x;
@@ -2828,6 +3660,7 @@ function performAttack() {
     arrowOrigin.y -= 0.15;
     const aimDir = getAimDirection();
     spawnProjectileEffect(arrowOrigin, aimDir, 0x8b5a2b, 'arrow');
+    if (def.ability === 'voidShot') spawnSpellEffect(arrowOrigin, aimDir, 0x5425a8, 0xb77cff);
   }
 
   for (let i = enemies.length - 1; i >= 0; i--) {
@@ -2840,7 +3673,22 @@ function performAttack() {
     const dot = toE.dot(forward);
     if (dot < threshold) continue;
     applyDamageToEnemy(enemy, weaponDamage);
+    if (def.ability === 'freeze') enemy.userData.frozenTimer = 2.5;
     hitAny = true;
+  }
+
+  if (game.mode === 'battleroyale') {
+    for (let i = brPlayers.length - 1; i >= 0; i--) {
+      const rival = brPlayers[i];
+      const toRival = new THREE.Vector3().subVectors(rival.position, origin);
+      const d = toRival.length();
+      if (d > def.range + 1) continue;
+      toRival.y = 0; toRival.normalize();
+      if (toRival.dot(forward) < threshold) continue;
+      applyDamageToBRPlayer(rival, weaponDamage, true);
+      hitAny = true;
+      if (def.type === 'melee') break;
+    }
   }
 
   if (dragon && game.mode === 'adventure' && dragon.userData.hp > 0) {
@@ -2849,7 +3697,19 @@ function performAttack() {
     if (d < def.range + 4) {
       toD.y = 0; toD.normalize();
       if (toD.dot(forward) > 0.2) {
-        applyDamageToDragon(weaponDamage);
+        applyDamageToDragon(def.ability === 'dragonSlayer' ? weaponDamage * 2 : weaponDamage);
+        hitAny = true;
+      }
+    }
+  }
+  if (def.ability === 'shockwave') createTitanShockwave(origin, 14, 22);
+  if (titanColossus && game.mode === 'adventure' && titanColossus.userData.hp > 0) {
+    const toT = new THREE.Vector3().subVectors(titanColossus.position, origin);
+    const d = toT.length();
+    if (d < def.range + 10) {
+      toT.y = 0; toT.normalize();
+      if (toT.dot(forward) > 0.08) {
+        applyDamageToTitan(weaponDamage);
         hitAny = true;
       }
     }
@@ -2873,7 +3733,7 @@ function killDragon() {
   document.getElementById('dragon-bar').style.display = 'none';
   addXP(200); // Dragon XP
   showLootNotification('legendary', 'Dragon Slain! +200 XP');
-  createWeaponPickup('wand', player.position.x + 3, player.position.z, 'legendary');
+  createWeaponPickup('dragonSlayer', player.position.x + 3, player.position.z, 'legendary');
 }
 function spawnProjectileEffect(origin, direction, color, style) {
   const geo = style === 'arrow' ? new THREE.BoxGeometry(0.08, 0.08, 1.0) : new THREE.SphereGeometry(0.15, 8, 8);
@@ -2912,6 +3772,14 @@ function showDamageVignette() {
 // ============================================================
 //  START / END
 // ============================================================
+function clearStartArea() {
+  for (const tree of trees) {
+    if (Math.hypot(tree.x - START_POSITION.x, tree.z - START_POSITION.z) < 12) tree.group.visible = false;
+  }
+  for (const rock of worldRocks) {
+    if (Math.hypot(rock.position.x - START_POSITION.x, rock.position.z - START_POSITION.z) < 12) rock.visible = false;
+  }
+}
 function startGame(loadSave) {
   if (!audioCtx) initAudio();
   if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -2962,14 +3830,18 @@ function startGame(loadSave) {
     document.getElementById('dragon-bar').style.display = 'block';
     document.getElementById('dragon-health-fill').style.width = '100%';
     document.getElementById('hud').querySelectorAll('.stat')[0].style.display = 'flex';
+    document.getElementById('br-hud').style.display = 'none';
+    if (brState.zoneMesh) { scene.remove(brState.zoneMesh); brState.zoneMesh = null; }
   } else {
     document.getElementById('dragon-bar').style.display = 'none';
     document.getElementById('hud').querySelectorAll('.stat')[0].style.display = 'none';
+    document.getElementById('titan-bar').style.display = 'none';
+    document.getElementById('br-hud').style.display = 'block';
   }
 
   playerModel.visible = false;
-  player.position.set(0, 1.6, 0);
-  player.groundY = getHeight(0, 0);
+  player.groundY = getHeight(START_POSITION.x, START_POSITION.z);
+  player.position.set(START_POSITION.x, player.groundY + player.height, START_POSITION.z);
   player.position.y = player.groundY + player.height;
   player.velocity.set(0, 0, 0);
   player.yaw = 0; player.pitch = 0;
@@ -3010,7 +3882,19 @@ function startGame(loadSave) {
   if (sky.rainParticles) scene.remove(sky.rainParticles);
   sky.rainParticles = null;
 
+  for (const tree of trees) { tree.group.visible = true; tree.destroyedByTitan = false; }
+  bridge.visible = true;
+  bridge.scale.y = 1;
+  bridge.userData.damage = 0;
+  for (const landmark of worldLandmarks) landmark.userData.titanWarning = false;
+  clearStartArea();
+
   if (dragon) { scene.remove(dragon); dragon = null; }
+  if (companionState.mesh) { scene.remove(companionState.mesh); companionState.mesh = null; }
+  companionState.type = null;
+  mountState.active = false;
+  if (mountState.mesh) { scene.remove(mountState.mesh); mountState.mesh = null; }
+  mountState.type = null;
 
   for (const c of chests) {
     c.userData.opened = false;
@@ -3037,17 +3921,30 @@ function startGame(loadSave) {
 
   for (const e of enemies) scene.remove(e);
   enemies.length = 0;
+  for (const effect of titanEffects) scene.remove(effect.mesh);
+  titanEffects.length = 0;
+  if (titanColossus) scene.remove(titanColossus);
+  titanColossus = null;
   if (game.mode === 'adventure') {
     for (let i = 0; i < MAP.enemyCount; i++) spawnEnemy();
     spawnPriorityMonsters();
   }
 
   if (game.mode === 'adventure') {
+    titanColossus = createTitanColossus();
+    titanState.regionIndex = Math.floor(Math.random() * titanRegions.length);
+    titanState.stepTimer = 1;
+    titanState.attackTimer = 5;
+    titanState.roarTimer = 10;
+    titanState.eventTimer = 35;
+    titanState.chargeTimer = 0;
     dragon = createDragon();
     dragon.userData = Object.assign(dragon.userData, { hp: 500, maxHp: 500, hitFlash: 0 });
     dragonState.mode = 'patrol'; dragonState.modeTimer = 0;
     dragonState.patrolAngle = Math.random() * Math.PI * 2;
     dragonState.fireCooldown = 0;
+  } else {
+    startBattleRoyale();
   }
 
   cubes.forEach(cube => {
@@ -3064,6 +3961,7 @@ function endGame(won) {
   game.won = won; game.lost = !won;
   document.getElementById('sprint-indicator') && (document.getElementById('sprint-indicator').style.display = 'none');
   document.getElementById('combo-display').style.display = 'none';
+  document.getElementById('br-hud').style.display = 'none';
   moveState.forward = false; moveState.backward = false;
   moveState.left = false; moveState.right = false;
   moveState.jump = false; moveState.sprint = false; moveState.attack = false;
@@ -3161,6 +4059,25 @@ function drawMinimap() {
       ctx.beginPath(); ctx.arc(dx, dz, 6, 0, Math.PI*2); ctx.fill();
       ctx.strokeStyle = '#ffcc00'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.arc(dx, dz, 9, 0, Math.PI*2); ctx.stroke();
+    }
+  }
+  if (titanColossus) {
+    const dx = (titanColossus.position.x-px)*sc, dz = (titanColossus.position.z-pz)*sc;
+    if (Math.abs(dx) < cx+12 && Math.abs(dz) < cy+12) {
+      ctx.fillStyle = '#52e0a7';
+      ctx.beginPath(); ctx.arc(dx, dz, 8, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle = '#bafff2'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(dx, dz, 12, 0, Math.PI*2); ctx.stroke();
+    }
+  }
+  const towerLandmark = worldLandmarks.find(landmark => landmark.userData && landmark.userData.poiType === 'tower');
+  if (towerLandmark) {
+    const dx = (towerLandmark.position.x-px)*sc, dz = (towerLandmark.position.z-pz)*sc;
+    if (Math.abs(dx) < cx+12 && Math.abs(dz) < cy+12) {
+      ctx.fillStyle = '#77e4d0';
+      ctx.fillRect(dx - 4, dz - 7, 8, 14);
+      ctx.strokeStyle = '#fff0a6'; ctx.lineWidth = 2;
+      ctx.strokeRect(dx - 7, dz - 10, 14, 20);
     }
   }
   ctx.fillStyle = '#7eff7e';
@@ -3354,10 +4271,17 @@ function animate() {
 
   if (game.active) {
     updatePlayer(gameDt, now);
-    updateEnemies(gameDt, now);
+    if (game.mode === 'adventure') updateEnemies(gameDt, now);
+    else updateBattleRoyale(gameDt, now);
+    if (game.mode === 'adventure') {
+      updateWorldEvents(gameDt);
+      updateArena(gameDt);
+    }
     updateCubes(gameDt, now);
     updateWeaponPickups(dt, now);
     updateDragon(gameDt, now);
+    updateTitan(gameDt, now);
+    updateTitanEffects(gameDt);
     updateAnchor(gameDt, now);
     updateSpellEffects(gameDt);
     updatePlayerAnimation(dt);
@@ -3372,6 +4296,8 @@ function animate() {
     updateFootsteps(dt, now);
     updateAmbient(dt);
     updateAmbientLife(dt, now);
+    updateCompanion(gameDt, now);
+    updateMount();
     checkWinCondition();
 
     if (moveState.attack) performAttack();
@@ -3380,13 +4306,25 @@ function animate() {
     if (chestPromptTimer > 0.1) {
       chestPromptTimer = 0;
       let nearChest = false;
+      let nearTower = false;
+      let nearArena = false;
       for (const c of chests) {
         if (c.userData.opened) continue;
         const dx = player.position.x - c.position.x;
         const dz = player.position.z - c.position.z;
         if (dx*dx + dz*dz < 3*3) { nearChest = true; break; }
       }
-      document.getElementById('interact-prompt').style.display = nearChest ? 'block' : 'none';
+      const tower = worldLandmarks.find(landmark => landmark.userData && landmark.userData.poiType === 'tower');
+      if (tower) nearTower = Math.hypot(player.position.x - tower.position.x, player.position.z - tower.position.z) < 28;
+      const arena = worldLandmarks.find(landmark => landmark.userData && landmark.userData.poiType === 'arena');
+      if (arena) nearArena = Math.hypot(player.position.x - arena.position.x, player.position.z - arena.position.z) < 26;
+      const prompt = document.getElementById('interact-prompt');
+      prompt.innerHTML = nearArena
+        ? 'Press <kbd style="background:#ffb347;color:#351900;padding:2px 8px;border-radius:4px;">E</kbd> to Enter Champion Arena'
+        : nearTower
+        ? 'Press <kbd style="background:#77e4d0;color:#06252a;padding:2px 8px;border-radius:4px;">E</kbd> to Enter Skyfall Tower'
+        : 'Press <kbd style="background:#ffcc00;color:#000;padding:2px 8px;border-radius:4px;">E</kbd> to Open';
+      prompt.style.display = nearChest || nearTower || nearArena ? 'block' : 'none';
     }
 
     document.getElementById('altitude-value').textContent = Math.round(player.position.y - player.height);
@@ -3407,7 +4345,7 @@ function animate() {
   enemies.forEach((enemy, i) => {
     if (enemy.visible && enemy.userData.knockbackVel && enemy.userData.knockbackVel.lengthSq() < 0.01) {
       enemy.rotation.y += dt * 0.5;
-      enemy.position.y = getHeight(enemy.position.x, enemy.position.z) + 0.6 + Math.sin(now*4+i)*0.1;
+      enemy.position.y = getHeight(enemy.position.x, enemy.position.z) + (enemy.userData.groundOffset || 0.6) + Math.sin(now*4+i)*0.1;
     }
   });
   chests.forEach((c, i) => {
@@ -3438,6 +4376,7 @@ function updatePlayer(dt, now) {
   if (player.isMoving) moveDir.normalize();
   player.isSprinting = moveState.sprint && player.isMoving;
   let speed = (player.isSprinting ? player.sprintSpeed : player.walkSpeed) * getMoveSpeedMultiplier();
+  if (mountState.active) speed *= 1.7;
 
   if (abilities.dash.active) speed *= 3;
 
@@ -3454,8 +4393,8 @@ function updatePlayer(dt, now) {
   const stepMove = totalMove.divideScalar(steps);
   for (let i = 0; i < steps; i++) {
     const nx = player.position.x + stepMove.x, nz = player.position.z + stepMove.z;
-    if (!checkTreeCollision(nx, player.position.z)) player.position.x = nx;
-    if (!checkTreeCollision(player.position.x, nz)) player.position.z = nz;
+    if (!checkWorldCollision(nx, player.position.z)) player.position.x = nx;
+    if (!checkWorldCollision(player.position.x, nz)) player.position.z = nz;
   }
 
   const dc = Math.sqrt(player.position.x**2 + player.position.z**2);
@@ -3466,6 +4405,8 @@ function updatePlayer(dt, now) {
   }
 
   let groundY = getHeight(player.position.x, player.position.z);
+  const towerGroundY = getTowerStairGround(player.position.x, player.position.z);
+  if (towerGroundY !== null) groundY = Math.max(groundY, towerGroundY);
   if (player.position.x > bridgeBounds.minX && player.position.x < bridgeBounds.maxX &&
       player.position.z > bridgeBounds.minZ && player.position.z < bridgeBounds.maxZ) {
     groundY = Math.max(groundY, bridgeBounds.y);
@@ -3615,8 +4556,9 @@ function updateEnemies(dt, now) {
       enemy.position.z += kb.z * dt;
       kb.multiplyScalar(0.85);
       kb.y -= 15 * dt;
-      if (enemy.position.y < getHeight(enemy.position.x, enemy.position.z) + 0.6) {
-        enemy.position.y = getHeight(enemy.position.x, enemy.position.z) + 0.6;
+      const groundOffset = enemy.userData.groundOffset || 0.6;
+      if (enemy.position.y < getHeight(enemy.position.x, enemy.position.z) + groundOffset) {
+        enemy.position.y = getHeight(enemy.position.x, enemy.position.z) + groundOffset;
         kb.y = 0;
       }
       return;
@@ -3641,7 +4583,9 @@ function updateEnemies(dt, now) {
       }
       enemy.userData.specialTimer = 12;
     }
-    const behaviorSpeed = monsterType === 'demonKnight' && dist < 12 ? 9 : monsterType ? enemy.userData.speed : speed;
+    if (enemy.userData.frozenTimer > 0) enemy.userData.frozenTimer -= dt;
+    const frozenMultiplier = enemy.userData.frozenTimer > 0 ? 0.22 : 1;
+    const behaviorSpeed = (monsterType === 'demonKnight' && dist < 12 ? 9 : monsterType ? enemy.userData.speed : speed) * frozenMultiplier;
     const across = (riverDistance(enemy.position.x, enemy.position.z) > MAP.riverWidth) !== 
                    (riverDistance(player.position.x, player.position.z) > MAP.riverWidth);
     if (dist < (monsterType ? 46 : range) && dist > 0.1 && !across) {
@@ -3655,7 +4599,7 @@ function updateEnemies(dt, now) {
         }
       }
     }
-    if (dist < (monsterType === 'iceGiant' || monsterType === 'seaSerpent' || monsterType === 'voidDragon' ? 3.5 : 1.5) && now - game.lastDamageTime > game.invincibleTime && !abilities.shield.active) {
+    if (dist < (monsterType === 'titan' ? 5.5 : monsterType === 'iceGiant' || monsterType === 'seaSerpent' || monsterType === 'voidDragon' ? 3.5 : 1.5) && now - game.lastDamageTime > game.invincibleTime && !abilities.shield.active) {
       game.health -= enemy.userData.attackDamage || 15;
       game.lastDamageTime = now;
       document.getElementById('health-fill').style.width = Math.max(0, (game.health/game.maxHealth)*100) + '%';
@@ -3663,6 +4607,215 @@ function updateEnemies(dt, now) {
       if (game.health <= 0) { game.health = 0; endGame(false); }
     }
   });
+}
+
+function spawnArenaRound() {
+  arenaState.round++;
+  if (arenaState.round > arenaState.maxRound) {
+    arenaState.active = false;
+    addXP(500);
+    createWeaponPickup('thunderHammer', player.position.x + 2, player.position.z + 2, 'legendary');
+    showLootNotification('legendary', 'Arena conquered · Thunder Hammer awarded');
+    return;
+  }
+  const pool = arenaState.round < 4 ? ['shadowWolf', 'demonKnight'] : arenaState.round < 8 ? ['crystalBeast', 'iceGiant', 'fireDrake'] : ['ancientKnight', 'lavaTitan', 'voidDragon'];
+  const count = 2 + Math.min(7, arenaState.round);
+  arenaState.enemies = [];
+  for (let i = 0; i < count; i++) {
+    const angle = i / count * Math.PI * 2;
+    const x = 220 + Math.cos(angle) * (8 + Math.random() * 7);
+    const z = -80 + Math.sin(angle) * (8 + Math.random() * 7);
+    const enemy = spawnEnemyAt(x, z, arenaState.round % 5 === 0, pool[Math.floor(Math.random() * pool.length)]);
+    arenaState.enemies.push(enemy);
+  }
+  showLootNotification(arenaState.round % 5 === 0 ? 'legendary' : 'rare', `Arena Round ${arenaState.round} begins`);
+}
+function enterArena() {
+  if (!game.active || game.mode !== 'adventure' || arenaState.active) return;
+  arenaState.active = true;
+  arenaState.round = 0;
+  spawnArenaRound();
+}
+function updateArena(dt) {
+  if (!arenaState.active || game.mode !== 'adventure') return;
+  const alive = arenaState.enemies.some(enemy => enemies.includes(enemy));
+  if (!alive) {
+    arenaState.nextRoundTimer -= dt;
+    if (arenaState.nextRoundTimer <= 0) { arenaState.nextRoundTimer = 2; spawnArenaRound(); }
+  }
+}
+
+// ============================================================
+//  BATTLE ROYALE
+// ============================================================
+function createBRPlayer(index) {
+  const group = new THREE.Group();
+  const avatar = playerModel.clone(true);
+  avatar.visible = true;
+  const flashMaterials = [];
+  avatar.traverse(part => {
+    if (part.isMesh) {
+      part.material = part.material.clone();
+      part.castShadow = true;
+      part.receiveShadow = true;
+      flashMaterials.push(part.material);
+    }
+  });
+  group.add(avatar);
+  const marker = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.45, 4), new THREE.MeshBasicMaterial({ color: 0xffe36e }));
+  marker.position.y = 2.9; group.add(marker);
+  const angle = (index / 20) * Math.PI * 2 + Math.random() * 0.4;
+  const radius = 45 + Math.random() * 100;
+  group.position.set(Math.cos(angle) * radius, getHeight(Math.cos(angle) * radius, Math.sin(angle) * radius), Math.sin(angle) * radius);
+  group.userData = {
+    hp: 100, maxHp: 100, attackTimer: 1 + Math.random() * 2,
+    speed: 3 + Math.random() * 1.6, name: `Rival ${String(index + 1).padStart(2, '0')}`,
+    target: null, hitFlash: 0, flashMaterials, avatar,
+    leftArm: avatar.children[2], rightArm: avatar.children[3],
+    leftLeg: avatar.children[4], rightLeg: avatar.children[5],
+    walkPhase: Math.random() * Math.PI * 2
+  };
+  scene.add(group);
+  brPlayers.push(group);
+}
+function removeBRPlayer(rival, byPlayer) {
+  const index = brPlayers.indexOf(rival);
+  if (index < 0) return;
+  scene.remove(rival);
+  brPlayers.splice(index, 1);
+  game.brAlive = brPlayers.length + 1;
+  if (byPlayer) {
+    game.brTotalKills++;
+    document.getElementById('kill-count').textContent = game.brTotalKills;
+    document.getElementById('br-kills-value').textContent = game.brTotalKills;
+    addXP(30);
+    showLootNotification('rare', `${rival.userData.name} eliminated`);
+  }
+}
+function applyDamageToBRPlayer(rival, damage, byPlayer = false) {
+  if (!rival || !rival.userData) return;
+  rival.userData.hp -= damage;
+  rival.userData.hitFlash = 0.12;
+  spawnDamageNumber(rival.position.clone().add(new THREE.Vector3(0, 2.6, 0)), Math.floor(damage), false, '#ffdb72');
+  if (rival.userData.hp <= 0) removeBRPlayer(rival, byPlayer);
+}
+function startBattleRoyale() {
+  for (const rival of brPlayers) scene.remove(rival);
+  brPlayers.length = 0;
+  for (const enemy of enemies) scene.remove(enemy);
+  enemies.length = 0;
+  if (dragon) { scene.remove(dragon); dragon = null; }
+  if (titanColossus) { scene.remove(titanColossus); titanColossus = null; }
+  brState.zoneCenter.set(0, 0, 0);
+  brState.zoneRadius = 280;
+  brState.startRadius = 280;
+  brState.targetRadius = 280;
+  brState.shrinkTimer = 28;
+  brState.matchTime = 0;
+  brState.npcTimer = 2.5;
+  if (brState.zoneMesh) scene.remove(brState.zoneMesh);
+  brState.zoneMesh = new THREE.Mesh(new THREE.RingGeometry(0.98, 1, 64), new THREE.MeshBasicMaterial({ color: 0xff9a5b, transparent: true, opacity: 0.72, side: THREE.DoubleSide }));
+  brState.zoneMesh.rotation.x = -Math.PI / 2;
+  brState.zoneMesh.position.y = 0.35;
+  brState.zoneMesh.scale.setScalar(brState.zoneRadius);
+  scene.add(brState.zoneMesh);
+  for (let i = 0; i < 20; i++) createBRPlayer(i);
+  game.brAlive = 21;
+  game.brTotalKills = 0;
+  document.getElementById('br-alive-value').textContent = '21';
+  document.getElementById('br-kills-value').textContent = '0';
+  document.getElementById('br-zone-value').textContent = '100%';
+  document.getElementById('br-zone-fill').style.width = '100%';
+}
+function updateBattleRoyale(dt, now) {
+  if (game.mode !== 'battleroyale') return;
+  brState.matchTime += dt;
+  brState.shrinkTimer -= dt;
+  if (brState.shrinkTimer <= 0 && brState.targetRadius > 36) {
+    brState.targetRadius = Math.max(36, brState.targetRadius - 42);
+    brState.shrinkTimer = 25;
+    showLootNotification('legendary', 'The storm is closing');
+  }
+  brState.zoneRadius += (brState.targetRadius - brState.zoneRadius) * Math.min(dt * 0.35, 1);
+  brState.zoneMesh.scale.setScalar(brState.zoneRadius);
+  const zonePct = Math.round((brState.zoneRadius / brState.startRadius) * 100);
+  document.getElementById('br-zone-value').textContent = `${zonePct}%`;
+  document.getElementById('br-zone-fill').style.width = `${zonePct}%`;
+
+  const playerDistance = Math.hypot(player.position.x - brState.zoneCenter.x, player.position.z - brState.zoneCenter.z);
+  if (playerDistance > brState.zoneRadius && now - game.lastDamageTime > 0.35 && !abilities.shield.active) {
+    game.health = Math.max(0, game.health - 7);
+    game.lastDamageTime = now;
+    document.getElementById('health-fill').style.width = `${game.health / game.maxHealth * 100}%`;
+    showDamageVignette();
+    if (game.health <= 0) { game.health = 0; endGame(false); return; }
+  }
+
+  for (let i = brPlayers.length - 1; i >= 0; i--) {
+    const rival = brPlayers[i];
+    if (!rival || !rival.parent) continue;
+    const ud = rival.userData;
+    if (ud.hitFlash > 0) {
+      ud.hitFlash -= dt;
+      ud.flashMaterials.forEach(material => material.emissive.setHex(ud.hitFlash > 0 ? 0xffffff : 0x000000));
+    }
+    const rivalDistance = Math.hypot(rival.position.x - brState.zoneCenter.x, rival.position.z - brState.zoneCenter.z);
+    if (rivalDistance > brState.zoneRadius) {
+      ud.hp -= 5 * dt;
+      if (ud.hp <= 0) { removeBRPlayer(rival, false); continue; }
+    }
+    let target = player;
+    let targetDistance = Math.hypot(player.position.x - rival.position.x, player.position.z - rival.position.z);
+    for (const other of brPlayers) {
+      if (other === rival) continue;
+      const distance = rival.position.distanceTo(other.position);
+      if (distance < targetDistance) { target = other; targetDistance = distance; }
+    }
+    const dx = target.position.x - rival.position.x;
+    const dz = target.position.z - rival.position.z;
+    const distance = Math.hypot(dx, dz);
+    const running = distance > 18 || rivalDistance > brState.zoneRadius - 20;
+    const moving = (distance < 42 && distance > 2) || rivalDistance > brState.zoneRadius - 12;
+    const moveSpeed = running ? ud.speed * 1.65 : ud.speed;
+    if (distance < 42 && distance > 2) {
+      rival.position.x += dx / distance * moveSpeed * dt;
+      rival.position.z += dz / distance * moveSpeed * dt;
+      rival.rotation.y = Math.atan2(dx, dz);
+    } else if (rivalDistance > brState.zoneRadius - 12) {
+      const cx = brState.zoneCenter.x - rival.position.x, cz = brState.zoneCenter.z - rival.position.z;
+      const cd = Math.hypot(cx, cz) || 1;
+      rival.position.x += cx / cd * moveSpeed * dt;
+      rival.position.z += cz / cd * moveSpeed * dt;
+      rival.rotation.y = Math.atan2(cx, cz);
+    }
+    const animationRate = running ? 16 : 9;
+    const animationAmount = moving ? (running ? 1.1 : 0.85) : 0;
+    if (moving) ud.walkPhase += dt * animationRate;
+    const swing = Math.sin(ud.walkPhase) * animationAmount;
+    ud.leftArm.rotation.x = -swing;
+    ud.rightArm.rotation.x = swing;
+    ud.leftLeg.rotation.x = swing;
+    ud.rightLeg.rotation.x = -swing;
+    ud.avatar.position.y = moving ? Math.abs(Math.sin(ud.walkPhase * 2)) * (running ? 0.08 : 0.04) : 0;
+    ud.avatar.children[1].rotation.x = moving ? (running ? 0.12 : 0.05) : 0;
+    rival.position.y = getHeight(rival.position.x, rival.position.z);
+    ud.attackTimer -= dt;
+    if (targetDistance < 3.2 && ud.attackTimer <= 0) {
+      ud.attackTimer = 1.2 + Math.random() * 1.5;
+      if (target === player) {
+        if (now - game.lastDamageTime > game.invincibleTime && !abilities.shield.active) {
+          game.health = Math.max(0, game.health - 9);
+          game.lastDamageTime = now;
+          document.getElementById('health-fill').style.width = `${game.health / game.maxHealth * 100}%`;
+          showDamageVignette();
+          if (game.health <= 0) { game.health = 0; endGame(false); return; }
+        }
+      } else applyDamageToBRPlayer(target, 14, false);
+    }
+  }
+  game.brAlive = brPlayers.length + 1;
+  document.getElementById('br-alive-value').textContent = game.brAlive;
+  if (brPlayers.length === 0 && game.active) endGame(true);
 }
 function updateCubes(dt, now) {
   if (game.mode !== 'adventure') return;
@@ -3770,6 +4923,7 @@ function updateCamera() {
 }
 function checkWinCondition() {
   if (game.mode === 'adventure' && game.score >= game.maxScore && !game.won && game.active) endGame(true);
+  if (game.mode === 'battleroyale' && brPlayers.length === 0 && !game.won && game.active) endGame(true);
 }
 
 // ============================================================
