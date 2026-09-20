@@ -11,6 +11,13 @@ npm run dev
 
 Create an optimized production bundle with `npm run build`.
 
+## GitHub Pages
+
+The included workflow builds the Vite app and deploys `dist/` whenever changes
+are pushed to `main`. In the repository's **Settings → Pages**, set **Source**
+to **GitHub Actions**. Publishing the repository root directly cannot run the
+React/Vite build step.
+
 ## Structure
 
 - `src/components/` — React screens and HUD components.
