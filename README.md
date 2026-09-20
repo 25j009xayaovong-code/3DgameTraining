@@ -19,3 +19,4 @@ Create an optimized production bundle with `npm run build`.
 - `src/styles/game.css` — preserved game styling.
 
 `app.html` remains as the original standalone implementation for reference while the React app starts from `index.html`.
+hello
